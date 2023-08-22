@@ -98,9 +98,11 @@ void stateMachine() {
 		case DRIVE_FORWARD:
 			driveForward();
 			break;
+		/*
 		case DRIVE_ADJUST:
 			driveAdjust();
 			break;
+		*/
 		case WAIT_90:
 			wait_90();
 			break;
