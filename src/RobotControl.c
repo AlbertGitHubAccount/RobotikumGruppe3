@@ -46,28 +46,28 @@ void driveBackward() {
 
 void driveAdjust() {
 	if (ownLaby_getPose()->cardinalDirection == DIRECTION_NORTH){
-		if (ownLaby_getRobotPose()->y < position_getCurrentPose()->y)
+		if (ownLaby_getRobotPose()->y < position_getExpectedPose()->y)
 			driveForward();
 		else
 			driveBackward();
 	}
 	
 	if (ownLaby_getPose()->cardinalDirection == DIRECTION_EAST){
-		if (ownLaby_getRobotPose()->x > position_getCurrentPose()->x)
+		if (ownLaby_getRobotPose()->x > position_getExpectedPose()->x)
 			driveForward();
 		else
 			driveBackward();
 	}
 	
 	if (ownLaby_getPose()->cardinalDirection == DIRECTION_SOUTH){
-		if (ownLaby_getRobotPose()->y > position_getCurrentPose()->y)
+		if (ownLaby_getRobotPose()->y > position_getExpectedPose()->y)
 			driveForward();
 		else
 			driveBackward();
 	}
 	
 	if (ownLaby_getPose()->cardinalDirection == DIRECTION_WEST){
-		if (ownLaby_getRobotPose()->x < position_getCurrentPose()->x)
+		if (ownLaby_getRobotPose()->x < position_getExpectedPose()->x)
 			driveForward();
 		else
 			driveBackward();
@@ -112,9 +112,11 @@ void stateMachine() {
 		case DRIVE_FORWARD:
 			driveForward();
 			break;
+		/*
 		case DRIVE_ADJUST:
 			driveAdjust();
 			break;
+		*/
 		case WAIT_90:
 			wait_90();
 			break;

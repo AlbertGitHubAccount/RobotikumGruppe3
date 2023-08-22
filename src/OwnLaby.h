@@ -203,6 +203,10 @@ bool robot_isWall(RobotDirection_t localDirection){
 	return isWall;
 }
 
+LPose_t labyPose;
+const LPose_t* ownLaby_getPose();
+void ownLaby_setPose();
+
 bool robot_canMove(RobotDirection_t localDirection){
 	bool canMove = true;
 	if(robot_isWall(localDirection) == true){

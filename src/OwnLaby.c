@@ -17,6 +17,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <tools/labyrinth/labyrinth.h>
+#include <communication/packetTypes.h>
 
 
 #define MAX_X 21
@@ -73,12 +74,11 @@ const LPose_t* ownLaby_getPose(){
 	return &labyPose; 
 }
 
-void ownLaby_setPose(const Pose_t* expextedPose)
-{
-	labyPose.row	= (uint8_t) floor((expextedPose->x + 125.0f) / LABY_CELLSIZE) + 3.0f;
-	labyPose.column = (uint8_t) floor((expextedPose->y + 125.0f) / LABY_CELLSIZE) + 3.0f;
+void ownLaby_setPose(){
+	labyPose.row	= (uint8_t) floor((position_getExpectedPose()->x + 125.0f) / LABY_CELLSIZE) + 3.0f;
+	labyPose.column = (uint8_t) floor((position_getExpectedPose()->y + 125.0f) / LABY_CELLSIZE) + 3.0f;
 	
-	float adjustedTheta = expextedPose->theta + 1.0f * M_PI_4;
+	float adjustedTheta = position_getExpectedPose()->theta + 1.0f * M_PI_4;
 	if (adjustedTheta >= 2.0f * M_PI)
 		adjustedTheta -= 2.0f * M_PI;
 	
@@ -93,8 +93,7 @@ const Pose_t* ownLaby_getRobotPose(){
 	return &labyRobotPose;
 }
 
-void ownLaby_setRobotPose(const LPose_t* labyPose)
-{
+void ownLaby_setRobotPose(const LPose_t* labyPose){
 	labyRobotPose.x = (((float) labyPose->row    - 3.0f) * LABY_CELLSIZE) - 125.0f;
 	labyRobotPose.y = (((float) labyPose->column - 3.0f) * LABY_CELLSIZE) - 125.0f;
 

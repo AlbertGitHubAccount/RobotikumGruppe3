@@ -36,7 +36,7 @@ void calcStopCounter_Turn(){
 		dtheta = M_PI;
 	}
 	if (getState() == TURN_ADJUST){
-		dtheta = position_getCurrentPose()->theta;
+		dtheta = position_getExpectedPose()->theta;
 		float dthetaWanted = ownLaby_getRobotPose()->theta;
 		dtheta -= dthetaWanted;
 		if (dtheta < 0.0f)
@@ -52,9 +52,9 @@ void calcStopCounter_Drive(){
 	}
 	else {
 		if ((ownLaby_getPose()->cardinalDirection == DIRECTION_NORTH) || (ownLaby_getPose()->cardinalDirection == DIRECTION_SOUTH))
-			adjustDistance = ownLaby_getRobotPose()->y - position_getCurrentPose()->y;
+			adjustDistance = ownLaby_getRobotPose()->y - position_getExpectedPose()->y;
 		if ((ownLaby_getPose()->cardinalDirection == DIRECTION_EAST) || (ownLaby_getPose()->cardinalDirection == DIRECTION_WEST))
-			adjustDistance = ownLaby_getRobotPose()->x - position_getCurrentPose()->x;
+			adjustDistance = ownLaby_getRobotPose()->x - position_getExpectedPose()->x;
 			
 		if (adjustDistance < 0.0f)
 			adjustDistance = adjustDistance * -1.0f;
@@ -161,21 +161,10 @@ ISR(PCINT0_vect){
 		}
 	}
 	
-	if ((getState() == DRIVE_FORWARD) || (getState() == DRIVE_ADJUST)){
+	if ((getState() == DRIVE_FORWARD) /* || (getState() == DRIVE_ADJUST)*/){
 		if (stopCounter == -10) {
 			calcStopCounter_Drive();
 		}
-		
-		/*
-		if( ((pinb & (1<<PCINT0)) ^ (pinbAlt & (1<<PCINT0))) != 0)
-			stopCounter--;
-		if( ((pinb & (1<<PCINT1)) ^ (pinbAlt & (1<<PCINT1))) != 0)
-			stopCounter--;
-		if( ((pinb & (1<<PCINT2)) ^ (pinbAlt & (1<<PCINT2))) != 0)
-			stopCounter--;
-		if( ((pinb & (1<<PCINT3)) ^ (pinbAlt & (1<<PCINT3))) != 0)
-			stopCounter--;
-		*/
 		
 		
 		if( ((pinb & (1<<PCINT0)) ^ (pinbAlt & (1<<PCINT0))) != 0) { // Flankenwechsel auf Kanal A
@@ -227,9 +216,11 @@ ISR(PCINT0_vect){
 		
 		if (stopCounter <= 0) {
 			stopCounter = -10;
+			/*
 			if (getState() == DRIVE_ADJUST)
 				setState(STOP);
 			else
+			*/
 				setState(TURN_ADJUST);
 		}
 	}
@@ -251,8 +242,10 @@ ISR(PCINT0_vect){
 		
 		if (stopCounter <= 0) {
 			stopCounter = -10;
+			
 			if (getState() == TURN_ADJUST)
-				setState(DRIVE_ADJUST);
+				//setState(DRIVE_ADJUST);
+				setState(STOP);
 			else
 				setState(TURN_ADJUST);
 		}
