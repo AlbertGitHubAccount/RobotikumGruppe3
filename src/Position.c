@@ -16,16 +16,12 @@
 
 
 RobotParameters_t value_robotParams = { .axleWidth = 134.0f, .distPerTick = 45.0f * 1.1494f * M_PI / 1024.0f, .user1 = 0.0f, .user2 = 0.0f };
-Pose_t expectedPose = {0.0f, 0.0f, M_PI/2};
+static Pose_t expectedPose = {0.0f, 0.0f, M_PI/2};
 static Pose_t truePose;
 static Pose_t poseDifference;
 
 RobotParameters_t position_getRobotParams(){
 	return value_robotParams;
-}
-
-Pose_t position_getExpectedPose(){
-	return expectedPose;
 }
 
 void position_setRobotParams(const RobotParameters_t* robotParams){
@@ -41,10 +37,6 @@ void position_setAprilTagPose(const Pose_t* aprilTagPose){
 }
 
 void position_updateExpectedPose() {
-	//timeTask_time_t time1;
-	//timeTask_getTimestamp(&time1);
-	//dTime = timeTask_getDuration(&time0, &time1); //Beispiel zum test, 100 ms
-	//time0 = time1;
 	int16_t l;
 	int16_t r;
 	encoder_getCountersAndReset(&l, &r);
@@ -53,7 +45,7 @@ void position_updateExpectedPose() {
 	float dy;
 	int16_t diffLR = r - l;
 	if (diffLR == 0) {
-		float d = r * value_robotParams.distPerTick;
+		float d = (float) r * value_robotParams.distPerTick;
 		dx = d * cosf(expectedPose.theta);
 		dy = d * sinf(expectedPose.theta);
 	} 
@@ -75,9 +67,15 @@ void position_updateExpectedPose() {
 	expectedPose.y		+= dy;
 }
 
+const Pose_t* position_getExpectedPose(){
+	return &expectedPose;
+}
+
+/*
 const Pose_t* position_getCurrentPose(){
-		return &expectedPose;
-	}
+	return &expectedPose;
+}
+*/
 
 void position_setPoseDifference(){
 	poseDifference.x		= truePose.x		- expectedPose.x;

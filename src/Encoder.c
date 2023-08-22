@@ -36,7 +36,7 @@ void calcStopCounter_Turn(){
 		dtheta = M_PI;
 	}
 	if (getState() == TURN_ADJUST){
-		dtheta = position_getCurrentPose()->theta;
+		dtheta = position_getExpectedPose()->theta;
 		float dthetaWanted = ownLaby_getRobotPose()->theta;
 		dtheta -= dthetaWanted;
 		if (dtheta < 0.0f)
@@ -52,9 +52,9 @@ void calcStopCounter_Drive(){
 	}
 	else {
 		if ((ownLaby_getPose()->cardinalDirection == DIRECTION_NORTH) || (ownLaby_getPose()->cardinalDirection == DIRECTION_SOUTH))
-			adjustDistance = ownLaby_getRobotPose()->y - position_getCurrentPose()->y;
+			adjustDistance = ownLaby_getRobotPose()->y - position_getExpectedPose()->y;
 		if ((ownLaby_getPose()->cardinalDirection == DIRECTION_EAST) || (ownLaby_getPose()->cardinalDirection == DIRECTION_WEST))
-			adjustDistance = ownLaby_getRobotPose()->x - position_getCurrentPose()->x;
+			adjustDistance = ownLaby_getRobotPose()->x - position_getExpectedPose()->x;
 			
 		if (adjustDistance < 0.0f)
 			adjustDistance = adjustDistance * -1.0f;
