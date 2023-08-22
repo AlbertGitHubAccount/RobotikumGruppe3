@@ -49,7 +49,28 @@ static void commDebug(__attribute__((unused)) const uint8_t* packet, const uint1
 // callback function for communication channel CH_IN_USER_COMMAND (User Command View in HWPCS)
 static void commUserCommand(const uint8_t* packet, __attribute__((unused)) const uint16_t size) {
     
-    
+    Path_t _path;
+	Pose_t expectedPose;
+	timeTask_time_t startTime;
+	//timeTask_time_t stopTime;
+	//timeTask_time_t currentTime;
+	timeTask_getTimestamp(&startTime);
+
+	UserCommand_t* cmd = (UserCommand_t*) packet;
+    switch (cmd->id) {
+    case 0: // command ID 0: stop motors
+        setState(STOP);
+        break;
+	case 1: // command ID 1: turn on spot
+		setState(TURN_AROUND);
+		break;
+    case 2: // command ID 2: Turn Left
+		setState(TURN_LEFT);
+        break;
+    case 3: // command ID 3
+		setState(TURN_RIGHT);
+		break;
+	case 4: 
 		expectedPose = position_getExpectedPose();
 		Point_t points[2];
 		_path.points = points; 
