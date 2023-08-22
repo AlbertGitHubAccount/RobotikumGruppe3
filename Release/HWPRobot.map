@@ -231,7 +231,7 @@ Discarded input sections
  .debug_aranges
                 0x00000000       0x18 lib/io/i2c/i2c.o
  .debug_line    0x00000000       0x1a lib/io/i2c/i2c.o
- .debug_str     0x00000000      0x164 lib/io/i2c/i2c.o
+ .debug_str     0x00000000      0x161 lib/io/i2c/i2c.o
  .comment       0x00000000       0x31 lib/io/i2c/i2c.o
  .data          0x00000000        0x0 lib/io/adc/adc_isr.o
  .bss           0x00000000        0x0 lib/io/adc/adc_isr.o
@@ -269,7 +269,7 @@ Discarded input sections
                 0x00000000       0x38 lib/tools/remoteDataProcessing/remoteDataProcessing.o
  .debug_ranges  0x00000000       0x28 lib/tools/remoteDataProcessing/remoteDataProcessing.o
  .debug_line    0x00000000      0x254 lib/tools/remoteDataProcessing/remoteDataProcessing.o
- .debug_str     0x00000000      0x3e5 lib/tools/remoteDataProcessing/remoteDataProcessing.o
+ .debug_str     0x00000000      0x3e2 lib/tools/remoteDataProcessing/remoteDataProcessing.o
  .comment       0x00000000       0x31 lib/tools/remoteDataProcessing/remoteDataProcessing.o
  .debug_frame   0x00000000       0xb4 lib/tools/remoteDataProcessing/remoteDataProcessing.o
  .text          0x00000000        0x0 lib/pathFollower/pathFollower.o
@@ -1492,7 +1492,7 @@ END GROUP
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000     0x75ca
+.debug_info     0x00000000     0x75c1
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x00000000      0xbbc C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega1280/avr51/crtatmega1280.o
  .debug_info    0x00000bbc      0x257 src/Bumper.o
@@ -1505,15 +1505,15 @@ END GROUP
  .debug_info    0x00003be5      0x7e9 src/RobotControl.o
  .debug_info    0x000043ce      0x105 src/badISR.o
  .debug_info    0x000044d3      0x2ab lib/tools/timeTask/timeTask.o
- .debug_info    0x0000477e       0x88 lib/tools/timeTask/timeTask_isr.o
- .debug_info    0x00004806      0x315 lib/motor/motor.o
- .debug_info    0x00004b1b       0x7d lib/io/uart/uart_isr.o
- .debug_info    0x00004b98      0x3e8 lib/io/uart/uart.o
- .debug_info    0x00004f80       0x7b lib/io/adc/adc_isr.o
- .debug_info    0x00004ffb      0x3f0 lib/io/adc/adc.o
- .debug_info    0x000053eb      0x7b7 lib/communication/communication.o
- .debug_info    0x00005ba2     0x1493 lib/pathFollower/pathFollower.o
- .debug_info    0x00007035      0x595 lib/tools/labyrinth/labyrinth.o
+ .debug_info    0x0000477e       0x85 lib/tools/timeTask/timeTask_isr.o
+ .debug_info    0x00004803      0x315 lib/motor/motor.o
+ .debug_info    0x00004b18       0x7a lib/io/uart/uart_isr.o
+ .debug_info    0x00004b92      0x3e8 lib/io/uart/uart.o
+ .debug_info    0x00004f7a       0x78 lib/io/adc/adc_isr.o
+ .debug_info    0x00004ff2      0x3f0 lib/io/adc/adc.o
+ .debug_info    0x000053e2      0x7b7 lib/communication/communication.o
+ .debug_info    0x00005b99     0x1493 lib/pathFollower/pathFollower.o
+ .debug_info    0x0000702c      0x595 lib/tools/labyrinth/labyrinth.o
 
 .debug_abbrev   0x00000000     0x2a53
  *(.debug_abbrev)
@@ -1580,41 +1580,41 @@ END GROUP
  .debug_frame   0x000009f8      0x268 lib/pathFollower/pathFollower.o
  .debug_frame   0x00000c60       0xb4 lib/tools/labyrinth/labyrinth.o
 
-.debug_str      0x00000000     0x1c8a
+.debug_str      0x00000000     0x1c87
  *(.debug_str)
  .debug_str     0x00000000      0x3e6 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega1280/avr51/crtatmega1280.o
- .debug_str     0x000003e6      0x253 src/Bumper.o
-                                0x296 (size before relaxing)
- .debug_str     0x00000639      0x241 src/Encoder.o
-                                0x445 (size before relaxing)
- .debug_str     0x0000087a       0x67 src/IR.o
-                                0x1c9 (size before relaxing)
- .debug_str     0x000008e1      0x741 src/main.o
-                                0xbaa (size before relaxing)
- .debug_str     0x00001022      0x26a src/OwnLaby.o
-                                0x621 (size before relaxing)
- .debug_str     0x0000128c       0x58 src/path.o
-                                0x26c (size before relaxing)
- .debug_str     0x000012e4       0x76 src/Position.o
-                                0x338 (size before relaxing)
- .debug_str     0x0000135a       0x8b src/RobotControl.o
-                                0x418 (size before relaxing)
- .debug_str     0x000013e5       0x63 src/badISR.o
-                                0x1c4 (size before relaxing)
- .debug_str     0x00001448       0x51 lib/tools/timeTask/timeTask.o
-                                0x268 (size before relaxing)
- .debug_str     0x00001499       0x55 lib/motor/motor.o
-                                0x20d (size before relaxing)
- .debug_str     0x000014ee      0x115 lib/io/uart/uart.o
-                                0x2e2 (size before relaxing)
- .debug_str     0x00001603       0xd3 lib/io/adc/adc.o
-                                0x2b7 (size before relaxing)
- .debug_str     0x000016d6      0x14c lib/communication/communication.o
-                                0x53c (size before relaxing)
- .debug_str     0x00001822      0x3ca lib/pathFollower/pathFollower.o
-                                0x899 (size before relaxing)
- .debug_str     0x00001bec       0x9e lib/tools/labyrinth/labyrinth.o
-                                0x30a (size before relaxing)
+ .debug_str     0x000003e6      0x250 src/Bumper.o
+                                0x293 (size before relaxing)
+ .debug_str     0x00000636      0x241 src/Encoder.o
+                                0x442 (size before relaxing)
+ .debug_str     0x00000877       0x67 src/IR.o
+                                0x1c6 (size before relaxing)
+ .debug_str     0x000008de      0x741 src/main.o
+                                0xba7 (size before relaxing)
+ .debug_str     0x0000101f      0x26a src/OwnLaby.o
+                                0x61e (size before relaxing)
+ .debug_str     0x00001289       0x58 src/path.o
+                                0x269 (size before relaxing)
+ .debug_str     0x000012e1       0x76 src/Position.o
+                                0x335 (size before relaxing)
+ .debug_str     0x00001357       0x8b src/RobotControl.o
+                                0x415 (size before relaxing)
+ .debug_str     0x000013e2       0x63 src/badISR.o
+                                0x1c1 (size before relaxing)
+ .debug_str     0x00001445       0x51 lib/tools/timeTask/timeTask.o
+                                0x265 (size before relaxing)
+ .debug_str     0x00001496       0x55 lib/motor/motor.o
+                                0x20a (size before relaxing)
+ .debug_str     0x000014eb      0x115 lib/io/uart/uart.o
+                                0x2df (size before relaxing)
+ .debug_str     0x00001600       0xd3 lib/io/adc/adc.o
+                                0x2b4 (size before relaxing)
+ .debug_str     0x000016d3      0x14c lib/communication/communication.o
+                                0x539 (size before relaxing)
+ .debug_str     0x0000181f      0x3ca lib/pathFollower/pathFollower.o
+                                0x896 (size before relaxing)
+ .debug_str     0x00001be9       0x9e lib/tools/labyrinth/labyrinth.o
+                                0x307 (size before relaxing)
 
 .debug_loc      0x00000000     0x511f
  *(.debug_loc)
