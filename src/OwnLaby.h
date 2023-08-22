@@ -34,7 +34,7 @@ typedef struct __attribute__((__packed__)) {
 
 LPose_t labyPose;
 const LPose_t* ownLaby_getPose();
-void ownLaby_setPose(const Pose_t* expextedPose);
+void ownLaby_setPose();
 
 Pose_t labyRobotPose;
 const Pose_t* ownLaby_getRobotPose();

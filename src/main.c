@@ -50,7 +50,7 @@ static void commDebug(__attribute__((unused)) const uint8_t* packet, const uint1
 static void commUserCommand(const uint8_t* packet, __attribute__((unused)) const uint16_t size) {
     
     Path_t _path;
-	Pose_t expectedPose;
+	const Pose_t* expectedPose;
 	timeTask_time_t startTime;
 	//timeTask_time_t stopTime;
 	//timeTask_time_t currentTime;
@@ -75,10 +75,10 @@ static void commUserCommand(const uint8_t* packet, __attribute__((unused)) const
 		Point_t points[2];
 		_path.points = points; 
 		_path.pathLength = 2;
-		_path.points[0].x = expectedPose.x;
-		_path.points[0].y = expectedPose.y - LABY_CELLSIZE_2;
-		_path.points[1].x = expectedPose.x;
-		_path.points[1].y = expectedPose.y + LABY_CELLSIZE + LABY_CELLSIZE_2;
+		_path.points[0].x = expectedPose->x;
+		_path.points[0].y = expectedPose->y - LABY_CELLSIZE_2;
+		_path.points[1].x = expectedPose->x;
+		_path.points[1].y = expectedPose->y + LABY_CELLSIZE + LABY_CELLSIZE_2;
 		pathFollower_setNewPath(&_path);
 		pathFollower_command(FOLLOWER_CMD_START);
 		break;
@@ -173,14 +173,14 @@ int main(void) {
             telemetry.infrared3 = ADC_getFilteredValue(2); //Left
             telemetry.infrared4 = 0;
             telemetry.infrared5 = 0;
-            telemetry.user1 = position_getCurrentPose()->theta;
+            telemetry.user1 = position_getExpectedPose()->theta;
             telemetry.user2 = ownLaby_getRobotPose()->theta;
             communication_writePacket(CH_OUT_TELEMETRY, (uint8_t*)&telemetry, sizeof(telemetry));
         }
 	
 		TIMETASK(POSE_TASK, 20) { // execute block approximately every 20ms				alter Timetask der OHNE APRILTAG arbeitet
 			position_updateExpectedPose();
-			const Pose_t* expectedPose = position_getCurrentPose();						
+			const Pose_t* expectedPose = position_getExpectedPose();						
 			// send pose update to HWPCS
 			communication_writePacket(CH_OUT_POSE, (uint8_t*)expectedPose, sizeof(*expectedPose));
 		}
@@ -204,7 +204,7 @@ int main(void) {
 		 TIMETASK(FOLLOWER_TASK, 20) {	
 			const PathFollowerStatus_t* pathFollower_status = pathFollower_getStatus();
 			if (pathFollower_status->enabled) {
-				const Pose_t* expectedPose = position_getCurrentPose();
+				const Pose_t* expectedPose = position_getExpectedPose();
 				if (pathFollower_update(expectedPose))
 					calculateDriveCommand(expectedPose, &pathFollower_status->lookahead);
 				else{
