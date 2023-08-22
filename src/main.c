@@ -173,8 +173,8 @@ int main(void) {
             telemetry.infrared3 = ADC_getFilteredValue(2); //Left
             telemetry.infrared4 = 0;
             telemetry.infrared5 = 0;
-            telemetry.user1 = ownLaby_getPose()->row;
-            telemetry.user2 = ownLaby_getPose()->column;
+            telemetry.user1 = position_getCurrentPose()->theta;
+            telemetry.user2 = ownLaby_getRobotPose()->theta;
             communication_writePacket(CH_OUT_TELEMETRY, (uint8_t*)&telemetry, sizeof(telemetry));
         }
 	
