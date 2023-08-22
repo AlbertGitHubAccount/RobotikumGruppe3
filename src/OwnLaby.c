@@ -28,7 +28,7 @@
 LPose_t labyPose = {3, 3, 0};
 Pose_t labyRobotPose = {0.0f, 0.0f, M_PI/2};
 
-int visit_count[LABYRINTH_ROWS][LABYRINTH_COLS];
+int* visit_count[LABYRINTH_ROWS][LABYRINTH_COLS];
 Position current_position;
 Position target_tile;
 
@@ -50,6 +50,16 @@ void ownLaby_setCurrentPosition(const LPose_t* labyPose){
 	current_position.x = labyPose->row;
 	current_position.y = labyPose->column;
 }
+
+int ownLaby_getVisitCount(int row, int column) {
+	return *(visit_count[row][column]);
+}
+
+void ownLaby_setVisitCount(int row, int col) {
+	(*(visit_count[row][col]))++;
+}
+
+
 
 const Position* ownLaby_getTargetTile(){
 	return &target_tile;
@@ -227,20 +237,20 @@ void ownLaby_explore(){
 	    //Check direction robot is facing and calculating distances relative to its direction
 	    if (pose.cardinalDirection == DIRECTION_NORTH){
 			if (canMoveForward == true) {
-				lowestVisitCount = visit_count[current_position.x][current_position.y+1];
+				lowestVisitCount = *visit_count[current_position.x][current_position.y+1];
 				leastVisitedDirection = FORWARD;
 				ownLaby_setTargetTile(current_position, 0, 1);
 			}
 			if (canMoveLeft == true){
-				if (lowestVisitCount > visit_count[current_position.x-1][current_position.y]){
-					lowestVisitCount = visit_count[current_position.x-1][current_position.y];
+				if (lowestVisitCount > *visit_count[current_position.x-1][current_position.y]){
+					lowestVisitCount = *visit_count[current_position.x-1][current_position.y];
 					leastVisitedDirection = LEFT;
 					ownLaby_setTargetTile(current_position, -1, 0);
 				}
 			}
 			if (canMoveRight == true){
-				if (lowestVisitCount > visit_count[current_position.x+1][current_position.y]){
-					lowestVisitCount = visit_count[current_position.x+1][current_position.y];
+				if (lowestVisitCount > *visit_count[current_position.x+1][current_position.y]){
+					lowestVisitCount = *visit_count[current_position.x+1][current_position.y];
 					leastVisitedDirection = RIGHT;
 					ownLaby_setTargetTile(current_position, 1, 0);
 				}
@@ -254,20 +264,20 @@ void ownLaby_explore(){
 		//Check that happens if Robot is facing Left
 		if (pose.cardinalDirection == DIRECTION_WEST){
 			if (canMoveForward == true ) {
-				lowestVisitCount = visit_count[current_position.x-1][current_position.y];
+				lowestVisitCount = *visit_count[current_position.x-1][current_position.y];
 				leastVisitedDirection = FORWARD;
 				ownLaby_setTargetTile(current_position, -1, 0);
 			}
 			if (canMoveLeft == true){
-				if (lowestVisitCount > visit_count[current_position.x][current_position.y-1]){
-					lowestVisitCount = visit_count[current_position.x][current_position.y-1];
+				if (lowestVisitCount > *visit_count[current_position.x][current_position.y-1]){
+					lowestVisitCount = *visit_count[current_position.x][current_position.y-1];
 					leastVisitedDirection = LEFT;
 					ownLaby_setTargetTile(current_position, 0, -1);
 				}
 			}
 			if (canMoveRight == true){
-				if (lowestVisitCount > visit_count[current_position.x][current_position.y+1]){
-					lowestVisitCount = visit_count[current_position.x][current_position.y+1];
+				if (lowestVisitCount > *visit_count[current_position.x][current_position.y+1]){
+					lowestVisitCount = *visit_count[current_position.x][current_position.y+1];
 					leastVisitedDirection = RIGHT;
 					ownLaby_setTargetTile(current_position, 0, 1);
 				}
@@ -281,20 +291,20 @@ void ownLaby_explore(){
 		//Check that happens if Robot is facing Right       	
 		if (pose.cardinalDirection == DIRECTION_EAST){
 			if (canMoveForward == true ) {
-				lowestVisitCount = visit_count[current_position.x+1][current_position.y];
+				lowestVisitCount = *visit_count[current_position.x+1][current_position.y];
 				leastVisitedDirection = FORWARD;
 				ownLaby_setTargetTile(current_position, 1, 0);
 			}
 			if (canMoveLeft == true){
-				if (lowestVisitCount > visit_count[current_position.x][current_position.y+1]){
-					lowestVisitCount = visit_count[current_position.x][current_position.y+1];
+				if (lowestVisitCount > *visit_count[current_position.x][current_position.y+1]){
+					lowestVisitCount = *visit_count[current_position.x][current_position.y+1];
 					leastVisitedDirection = LEFT;
 					ownLaby_setTargetTile(current_position, 0, 1);
 				}
 			}
 			if (canMoveRight == true){
-				if (lowestVisitCount > visit_count[current_position.x][current_position.y-1]){
-					lowestVisitCount = visit_count[current_position.x][current_position.y-1];
+				if (lowestVisitCount > *visit_count[current_position.x][current_position.y-1]){
+					lowestVisitCount = *visit_count[current_position.x][current_position.y-1];
 					leastVisitedDirection = RIGHT;
 					ownLaby_setTargetTile(current_position, 0, -1);
 				}
@@ -308,20 +318,20 @@ void ownLaby_explore(){
 		//Robot is facing Downwards
 		if (pose.cardinalDirection == DIRECTION_SOUTH){
 			if (canMoveForward == true ) {
-				lowestVisitCount = visit_count[current_position.x][current_position.y-1];
+				lowestVisitCount = *visit_count[current_position.x][current_position.y-1];
 				leastVisitedDirection = FORWARD;
 				ownLaby_setTargetTile(current_position, 0, -1);
 			}
 			if (canMoveLeft == true){
-				if (lowestVisitCount > visit_count[current_position.x+1][current_position.y]){
-					lowestVisitCount = visit_count[current_position.x+1][current_position.y];
+				if (lowestVisitCount > *visit_count[current_position.x+1][current_position.y]){
+					lowestVisitCount = *visit_count[current_position.x+1][current_position.y];
 					leastVisitedDirection = LEFT;
 					ownLaby_setTargetTile(current_position, 1, 0);
 				}
 			}
 			if (canMoveRight == true){
-				if (lowestVisitCount > visit_count[current_position.x-1][current_position.y]){
-					lowestVisitCount = visit_count[current_position.x-1][current_position.y];
+				if (lowestVisitCount > *visit_count[current_position.x-1][current_position.y]){
+					lowestVisitCount = *visit_count[current_position.x-1][current_position.y];
 					leastVisitedDirection = RIGHT;
 					ownLaby_setTargetTile(current_position, -1, 0);
 				}
