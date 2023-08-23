@@ -20,6 +20,7 @@ src/RobotControl.d src/RobotControl.o: ../src/RobotControl.c \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\lock.h \
  ..\lib/tools/powerSaver.h ..\lib/io/led/led.h ..\lib/motor/motor.h \
  ..\lib/communication/packetTypes.h ..\lib/tools/labyrinth/labyrinth.h \
+ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\math.h \
  ../src/robotControl.h ../src/IR.h ../src/OwnLaby.h ../src/Position.h
 
 c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\stdio.h:
@@ -75,6 +76,8 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\
 ..\lib/communication/packetTypes.h:
 
 ..\lib/tools/labyrinth/labyrinth.h:
+
+c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\math.h:
 
 ../src/robotControl.h:
 
