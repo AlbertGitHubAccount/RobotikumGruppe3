@@ -14,6 +14,7 @@
 #include <motor/motor.h>
 #include <communication/packetTypes.h>
 #include <tools/labyrinth/labyrinth.h>
+#include <math.h>
                  
 #include "robotControl.h"
 #include "IR.h"
@@ -74,19 +75,35 @@ void driveAdjust() {
 	}
 }
 
-void wait_90() {
-	timeTask_time_t now;
-	timeTask_getTimestamp(&now);
-	if (timeTask_getDuration(&startTime, &now) > 1050000UL)
-	setState(STOP);
-}
-
 void turnLeft() {
 	Motor_setPWM(-3000, 3000);
 }
 
 void turnRight() {
 	Motor_setPWM(3000, -3000);
+}
+
+void turnAdjust(){
+	float dtheta = position_getExpectedPose()->theta + M_PI_4;
+	if (dtheta > 2.0f * M_PI_2)
+		dtheta -= 2.0f * M_PI_2;
+	
+	float dthetaWanted = ownLaby_getRobotPose()->theta  + M_PI_4;
+	if (dthetaWanted > 2.0f * M_PI_2)
+		dthetaWanted -= 2.0f * M_PI_2;
+		
+	dtheta -= dthetaWanted;
+	if (dtheta < 0.0f)
+		turnLeft();
+	if (dtheta > 0.0f)
+		turnRight();
+}
+
+void wait_90() {
+	timeTask_time_t now;
+	timeTask_getTimestamp(&now);
+	if (timeTask_getDuration(&startTime, &now) > 1050000UL)
+	setState(STOP);
 }
 
 
