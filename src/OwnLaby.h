@@ -40,6 +40,9 @@ Pose_t labyRobotPose;
 const Pose_t* ownLaby_getRobotPose();
 void ownLaby_setRobotPose(const LPose_t* labyPose);
 
+int ownLaby_getVisitCount(int row, int column);
+void ownLaby_setVisitCount(int row, int col);
+
 //bool robot_canContinue();
 bool robot_isWall(RobotDirection_t localDirection);
 bool robot_canMove(RobotDirection_t localDirection);

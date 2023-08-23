@@ -15,6 +15,8 @@
 
 typedef enum state {
 	IDLE,
+	CHECK_SENSORS,
+	CHOOSE_DIRECTION,
 	DRIVE_FORWARD,
 	//DRIVE_ADJUST,
 	WAIT_90,

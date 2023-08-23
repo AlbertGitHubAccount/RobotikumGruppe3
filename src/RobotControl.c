@@ -106,12 +106,26 @@ void wait_90() {
 	setState(STOP);
 }
 
+void checkSensors(){
+	robot_isWall(0);
+	robot_isWall(1);
+	robot_isWall(2);
+	setState(CHOOSE_DIRECTION);
+}
+
+void chooseDirection(){
+	
+}
 
 // Funktion zur Steuerung des Roboters
 void stateMachine() {
 	switch (state) {
 		case IDLE:
 			break;
+		case CHECK_SENSORS:
+			checkSensors();
+		case CHOOSE_DIRECTION:
+			chooseDirection();
 		case DRIVE_FORWARD:
 			driveForward();
 			break;
