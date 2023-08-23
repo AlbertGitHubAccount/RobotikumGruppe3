@@ -16,7 +16,8 @@
 
 
 RobotParameters_t value_robotParams = { .axleWidth = 134.0f, .distPerTick = 45.0f * 1.1494f * M_PI / 1024.0f, .user1 = 0.0f, .user2 = 0.0f };
-static Pose_t expectedPose = {0.0f, 0.0f, M_PI/2};
+static Pose_t expectedPose;
+
 static Pose_t truePose;
 static Pose_t poseDifference;
 

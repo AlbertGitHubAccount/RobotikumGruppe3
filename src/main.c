@@ -178,7 +178,7 @@ int main(void) {
             communication_writePacket(CH_OUT_TELEMETRY, (uint8_t*)&telemetry, sizeof(telemetry));
         }
 	
-		TIMETASK(POSE_TASK, 20) { // execute block approximately every 20ms				alter Timetask der OHNE APRILTAG arbeitet
+		TIMETASK(POSE_TASK, 150) { // execute block approximately every 150ms				alter Timetask der OHNE APRILTAG arbeitet
 			position_updateExpectedPose();
 			const Pose_t* expectedPose = position_getExpectedPose();						
 			// send pose update to HWPCS
