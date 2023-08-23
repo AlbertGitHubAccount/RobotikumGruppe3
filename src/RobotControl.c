@@ -42,7 +42,7 @@ void driveForward() {
 }
 
 void driveBackward() {
-	Motor_setPWM(-3000, -3010);
+	Motor_setPWM(-1500, -1505);
 }
 
 void driveAdjust() {
@@ -92,10 +92,9 @@ void turnAdjust(){
 	if (dthetaWanted > 2.0f * M_PI_2)
 		dthetaWanted -= 2.0f * M_PI_2;
 		
-	dtheta -= dthetaWanted;
-	if (dtheta < 0.0f)
+	if (dtheta < dthetaWanted)
 		turnLeft();
-	if (dtheta > 0.0f)
+	if (dtheta > dthetaWanted)
 		turnRight();
 }
 
@@ -129,11 +128,12 @@ void stateMachine() {
 		case DRIVE_FORWARD:
 			driveForward();
 			break;
-		/*
+		case DRIVE_BACKWARD:
+			driveBackward();
+			break;
 		case DRIVE_ADJUST:
 			driveAdjust();
 			break;
-		*/
 		case WAIT_90:
 			wait_90();
 			break;
@@ -147,7 +147,7 @@ void stateMachine() {
 			turnLeft();
 			break;
 		case TURN_ADJUST:
-			turnRight();
+			turnAdjust();
 			break;
 		case STOP:
 			Motor_stopAll();

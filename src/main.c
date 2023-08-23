@@ -88,6 +88,9 @@ static void commUserCommand(const uint8_t* packet, __attribute__((unused)) const
 	case 6:
 		ownLaby_explore();
 		break;
+	case 7:
+		setState(DRIVE_BACKWARD);
+		break;
 	}
 }
 
