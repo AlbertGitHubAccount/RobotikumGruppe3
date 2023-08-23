@@ -36,7 +36,7 @@ void calcStopCounter_Turn(){
 		dtheta = M_PI;
 	}
 	if (getState() == TURN_ADJUST){
-		dtheta = position_getExpectedPose()->theta;
+		dtheta = position_getExpectedPose()->theta + M_PI_4;
 		if (dtheta > 2.0f * M_PI_2)
 			dtheta -= 2.0f * M_PI_2;
 		
@@ -167,7 +167,7 @@ ISR(PCINT0_vect){
 		}
 	}
 	
-	if ((getState() == DRIVE_FORWARD) /* || (getState() == DRIVE_ADJUST)*/){
+	if ((getState() == DRIVE_FORWARD) || (getState() == DRIVE_ADJUST)){
 		if (stopCounter == -10) {
 			calcStopCounter_Drive();
 		}
@@ -222,13 +222,11 @@ ISR(PCINT0_vect){
 		
 		if (stopCounter <= 0) {
 			stopCounter = -10;
-			/*
+		
 			if (getState() == DRIVE_ADJUST)
 				setState(STOP);
 			else
-			*/
-				//setState(TURN_ADJUST);
-				setState(STOP);
+				setState(TURN_ADJUST);
 		}
 	}
 	
@@ -251,11 +249,9 @@ ISR(PCINT0_vect){
 			stopCounter = -10;
 			
 			if (getState() == TURN_ADJUST)
-				//setState(DRIVE_ADJUST);
-				setState(STOP);
+				setState(DRIVE_ADJUST);
 			else
-				//setState(TURN_ADJUST);
-				setState(STOP);
+				setState(TURN_ADJUST);
 		}
 	}
 	
