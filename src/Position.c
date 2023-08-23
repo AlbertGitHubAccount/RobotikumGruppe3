@@ -16,8 +16,10 @@
 
 
 RobotParameters_t value_robotParams = { .axleWidth = 134.0f, .distPerTick = 45.0f * 1.1494f * M_PI / 1024.0f, .user1 = 0.0f, .user2 = 0.0f };
+
 static Pose_t* expectedPose;
 static Pose_t* truePose;
+
 static Pose_t poseDifference;
 
 RobotParameters_t position_getRobotParams(){
@@ -50,9 +52,9 @@ void position_updateExpectedPose() {
 		dy = d * sinf(expectedPose->theta);
 	} 
 	else {
-		float dTheta	= diffLR * value_robotParams.distPerTick / value_robotParams.axleWidth; //dTheta wird für dx und dy verwendet
+		float dTheta	= diffLR * value_robotParams.distPerTick / value_robotParams.axleWidth; //dTheta wird fÃ¼r dx und dy verwendet
 	
-		float R = ((float)(r + l) / (float)diffLR) * (value_robotParams.axleWidth/2.0f); //zwischenrechnung für Übersichtilichen Code
+		float R = ((float)(r + l) / (float)diffLR) * (value_robotParams.axleWidth/2.0f); //zwischenrechnung fÃ¼r Ãœbersichtilichen Code
 		dx		= R * (sinf(expectedPose->theta + dTheta) - sinf(expectedPose->theta));
 		dy		= R * (cosf(expectedPose->theta) - cosf(expectedPose->theta + dTheta));
 		expectedPose->theta	+= dTheta;

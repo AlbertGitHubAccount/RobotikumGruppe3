@@ -37,10 +37,16 @@ void calcStopCounter_Turn(){
 	}
 	if (getState() == TURN_ADJUST){
 		dtheta = position_getExpectedPose()->theta;
-		float dthetaWanted = ownLaby_getRobotPose()->theta;
+		if (dtheta > 2.0f * M_PI_2)
+			dtheta -= 2.0f * M_PI_2;
+		
+		float dthetaWanted = ownLaby_getRobotPose()->theta  + M_PI_4;
+		if (dthetaWanted > 2.0f * M_PI_2)
+			dthetaWanted -= 2.0f * M_PI_2;
+		
 		dtheta -= dthetaWanted;
 		if (dtheta < 0.0f)
-			dtheta += 2.0f * M_PI;
+			dtheta = -1.0f * dtheta;
 	}
 	stopCounter	= (int16_t) ((dtheta * value_robotParams.axleWidth / value_robotParams.distPerTick));
 }
@@ -59,7 +65,7 @@ void calcStopCounter_Drive(){
 		if (adjustDistance < 0.0f)
 			adjustDistance = adjustDistance * -1.0f;
 	}
-	stopCounter = (int16_t) ((adjustDistance / value_robotParams.distPerTick) * 2.3f);
+	stopCounter = (int16_t) ((adjustDistance / value_robotParams.distPerTick) * 2.0f);
 }
 
 int16_t encoder_getStopCounter(){
@@ -221,13 +227,14 @@ ISR(PCINT0_vect){
 				setState(STOP);
 			else
 			*/
-				setState(TURN_ADJUST);
+				//setState(TURN_ADJUST);
+				setState(STOP);
 		}
 	}
 	
 	if ((getState() == TURN_LEFT) || (getState() == TURN_RIGHT) || (getState() == TURN_AROUND) || (getState() == TURN_ADJUST)){
 		if (stopCounter == -10) {
-			calcStopCounter_Drive();
+			calcStopCounter_Turn();
 		}
 		
 		
@@ -247,7 +254,8 @@ ISR(PCINT0_vect){
 				//setState(DRIVE_ADJUST);
 				setState(STOP);
 			else
-				setState(TURN_ADJUST);
+				//setState(TURN_ADJUST);
+				setState(STOP);
 		}
 	}
 	
