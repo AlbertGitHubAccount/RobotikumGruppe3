@@ -127,6 +127,7 @@ static void init(void) {
 	ADC_init(true);
 	pathFollower_init();	
 	
+	//position_init();
 	bumper_init();
 	encoder_init();
 	ownLaby_init();
@@ -178,8 +179,9 @@ int main(void) {
             communication_writePacket(CH_OUT_TELEMETRY, (uint8_t*)&telemetry, sizeof(telemetry));
         }
 	
-		TIMETASK(POSE_TASK, 20) { // execute block approximately every 20ms				alter Timetask der OHNE APRILTAG arbeitet
-			position_updateExpectedPose();
+		TIMETASK(POSE_TASK, 150) { // execute block approximately every 150ms				alter Timetask der OHNE APRILTAG arbeitet
+			Pose_t* truePose = position_getAprilTagPose();
+			position_setExpectedPose(truePose);
 			const Pose_t* expectedPose = position_getExpectedPose();						
 			// send pose update to HWPCS
 			communication_writePacket(CH_OUT_POSE, (uint8_t*)expectedPose, sizeof(*expectedPose));
@@ -192,7 +194,7 @@ int main(void) {
 		}
 		
 		TIMETASK(APRIL_POSE_TASK, 150) { // TimeTask der Pose von AprilTag nimmt
-			const Pose_t* truePose = position_getAprilTagPose();
+			Pose_t* truePose = position_getAprilTagPose();
 			const LPose_t* labyPose = ownLaby_getPose();
 			//Pose_t* expectedPose = position_getAprilTagPose();
 			ownLaby_setPose(truePose);
