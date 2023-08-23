@@ -65,7 +65,7 @@ void calcStopCounter_Drive(){
 		if (adjustDistance < 0.0f)
 			adjustDistance = adjustDistance * -1.0f;
 	}
-	stopCounter = (int16_t) ((adjustDistance / value_robotParams.distPerTick) * 2.0f);
+	stopCounter = (int16_t) ((adjustDistance / value_robotParams.distPerTick) * 2.25f);
 }
 
 int16_t encoder_getStopCounter(){
