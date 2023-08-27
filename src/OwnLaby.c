@@ -123,26 +123,54 @@ void ownLaby_init() {
 	target_tile			= *ownLaby_getTargetTile();
 } // explore()
 
-int8_t robot_getExitDirection()
-{
+int8_t robot_getExitDirection(){
 	int8_t exitDirection = -1;
 	
-	if ((ownLaby_getPose()->row == 0) && (ownLaby_getPose()->column == 3)){
-		if ((ownLaby_getPose()->cardinalDirection == DIRECTION_NORTH))
-			exitDirection = 1;
+	LPose_t pose = *ownLaby_getPose();
+	Walls_t walls = labyrinth_getWalls(pose.row, pose.column);
+	
+	if (walls.walls < 3){ //Wenn es drei Wände gibt ist es auf keinen Fall der Exit
+		if ((ownLaby_getPose()->row == 0) && (walls.wall.north == WALLSTATE_CLEARED)){ //Roboter ist an der Nördlichen Kante
+			if ((ownLaby_getPose()->cardinalDirection == DIRECTION_NORTH))
+				exitDirection = 1;
+			if ((ownLaby_getPose()->cardinalDirection == DIRECTION_EAST))
+				exitDirection = 0;
+			else
+				exitDirection = 2;
+		}
 		
-		if ((ownLaby_getPose()->cardinalDirection == DIRECTION_EAST)){
-			exitDirection = 0;
-		} 
-		else{
-			exitDirection = 2;
+		if ((ownLaby_getPose()->column == 6) && (walls.wall.east == WALLSTATE_CLEARED)){ //Roboter ist an der Östlichen Kante
+			if ((ownLaby_getPose()->cardinalDirection == DIRECTION_EAST))
+				exitDirection = 1;
+			if ((ownLaby_getPose()->cardinalDirection == DIRECTION_SOUTH))
+				exitDirection = 0;
+			else
+				exitDirection = 2;
+		}
+		
+		if ((ownLaby_getPose()->row == 6) && (walls.wall.south == WALLSTATE_CLEARED)){ //Roboter ist an der Südlichen Kante
+			if ((ownLaby_getPose()->cardinalDirection == DIRECTION_SOUTH))
+				exitDirection = 1;
+			if ((ownLaby_getPose()->cardinalDirection == DIRECTION_WEST))
+				exitDirection = 0;
+			else
+				exitDirection = 2;
+		}
+		
+		if ((ownLaby_getPose()->column == 0) && (walls.wall.west == WALLSTATE_CLEARED)){ //Roboter ist an der Westlichen Kante
+			if ((ownLaby_getPose()->cardinalDirection == DIRECTION_WEST))
+				exitDirection = 1;
+			if ((ownLaby_getPose()->cardinalDirection == DIRECTION_NORTH))
+				exitDirection = 0;
+			else
+				exitDirection = 2;
 		}
 	}
+	
 	return exitDirection;
 }
 
-void robot_rotate(RobotDirection_t localDirection)
-{
+void robot_rotate(RobotDirection_t localDirection){
 	if(localDirection == LEFT)
 		setState(TURN_LEFT);
 	if(localDirection == RIGHT)
@@ -151,8 +179,7 @@ void robot_rotate(RobotDirection_t localDirection)
 		setState(TURN_AROUND);
 }
 
-bool robot_move(RobotDirection_t moveState)
-{
+bool robot_move(RobotDirection_t moveState){
 	bool hasMoved = false;
 	if (moveState == FORWARD){
 		if (robot_canMove(moveState) == true){
@@ -164,8 +191,7 @@ bool robot_move(RobotDirection_t moveState)
 	return hasMoved;
 }
 
-Direction_t ownLaby_localToCardinal(RobotDirection_t localDirection, Direction_t cardinalDirection)
-{
+Direction_t ownLaby_localToCardinal(RobotDirection_t localDirection, Direction_t cardinalDirection){
 	int8_t newCardinalDirection = ((int8_t)localDirection - 1) + ((int8_t)cardinalDirection);
 	
 	if (newCardinalDirection >= 4)
