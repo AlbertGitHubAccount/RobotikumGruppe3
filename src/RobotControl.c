@@ -15,7 +15,8 @@
 #include <communication/packetTypes.h>
 #include <tools/labyrinth/labyrinth.h>
 #include <math.h>
-                 
+
+#include "globalVariables.h"                 
 #include "robotControl.h"
 #include "IR.h"
 #include "OwnLaby.h"
