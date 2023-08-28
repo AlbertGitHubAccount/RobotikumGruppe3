@@ -147,18 +147,20 @@ void stateMachine() {
 		case CHOOSE_LEFT:
 			leftState();
 			break;
-		case CHOOSE_RIGHT;
+		case CHOOSE_RIGHT:
 			rightState();
 			break;
-		case CHOOSE_BACKWARD;
+		case CHOOSE_BACKWARD:
 			backwardState();
 			break;
-		case CHOOSE_FORWARD;
+		case CHOOSE_FORWARD:
 			forwardState();
 			break;
 		case DRIVE_BACKWARD:
 			driveBackward();
 			break;
+		case DRIVE_FORWARD:
+			driveForward();
 		case DRIVE_ADJUST:
 			driveAdjust();
 			break;
