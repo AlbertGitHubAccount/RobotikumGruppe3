@@ -107,22 +107,37 @@ void wait_90() {
 }
 
 void checkSensors(){
-	robot_isWall(0);
-	robot_isWall(1);
-	robot_isWall(2);
-	setState(CHOOSE_DIRECTION);
-}
-
-void chooseDirection(){
-	//Wände chekcen
+	//prüfe Wände
 	robot_isWall(0);
 	robot_isWall(1);
 	robot_isWall(2);
 	robot_isWall(3);
+	
+	//Setze Wände in HWPCOntrollSystem
+	
+	//Wechsle State
+	setState(CHOOSE_DIRECTION);
+}
+
+void chooseDirection(){
+	//Wände checken
+	if(robot_isWall(0)== true) canGoNorth = false;
+	if(robot_isWall(1)== true) canGoWest = false;
+	if(robot_isWall(2)== true) canGoSouth = false;
+	if(robot_isWall(3)== true) canGoEast = false;
+	
+	//aus aktueller Position tiles berechnen die der Roboter besuchen kann
+	
+	//aus den möglichen Richtungen die auswählen, die am seltensten besucht wurde
 }
 
 void leftState(){
-    *currentDirectionPtr = NORTH;
+    //drehe nach links
+	
+	//update Cardinal direction
+	
+	//gehe in den nächsten Status
+	setState(DRIVE_FORWARD);
 }
 
 void rightState(){
