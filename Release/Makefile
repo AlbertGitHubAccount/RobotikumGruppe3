@@ -59,6 +59,7 @@ C_SRCS +=  \
 ../src/Bumper.c \
 ../src/Encoder.c \
 ../src/globalVariables.c \
+../src/helperFunctions.c \
 ../src/IR.c \
 ../src/main.c \
 ../src/OwnLaby.c \
@@ -90,6 +91,7 @@ OBJS +=  \
 src/Bumper.o \
 src/Encoder.o \
 src/globalVariables.o \
+src/helperFunctions.o \
 src/IR.o \
 src/main.o \
 src/OwnLaby.o \
@@ -114,6 +116,7 @@ OBJS_AS_ARGS +=  \
 src/Bumper.o \
 src/Encoder.o \
 src/globalVariables.o \
+src/helperFunctions.o \
 src/IR.o \
 src/main.o \
 src/OwnLaby.o \
@@ -138,6 +141,7 @@ C_DEPS +=  \
 src/Bumper.d \
 src/Encoder.d \
 src/globalVariables.d \
+src/helperFunctions.d \
 src/IR.d \
 src/main.d \
 src/OwnLaby.d \
@@ -162,6 +166,7 @@ C_DEPS_AS_ARGS +=  \
 src/Bumper.d \
 src/Encoder.d \
 src/globalVariables.d \
+src/helperFunctions.d \
 src/IR.d \
 src/main.d \
 src/OwnLaby.d \
@@ -211,6 +216,13 @@ src/Encoder.o: ../src/Encoder.c
 	
 
 src/globalVariables.o: ../src/globalVariables.c
+	@echo Building file: $<
+	@echo Invoking: AVR/GNU C Compiler : 5.4.0
+	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DF_CPU=8000000UL  -I"..\src" -I"..\lib" -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\include"  -O2 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -Wextra -pedantic -mmcu=atmega1280 -B "C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\gcc\dev\atmega1280" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	@echo Finished building: $<
+	
+
+src/helperFunctions.o: ../src/helperFunctions.c
 	@echo Building file: $<
 	@echo Invoking: AVR/GNU C Compiler : 5.4.0
 	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DF_CPU=8000000UL  -I"..\src" -I"..\lib" -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\include"  -O2 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -Wextra -pedantic -mmcu=atmega1280 -B "C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\gcc\dev\atmega1280" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 

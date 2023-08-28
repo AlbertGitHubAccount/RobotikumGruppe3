@@ -104,18 +104,18 @@ void driveAdjust() {
 void turnLeft() {
 	Motor_setPWM(-3000, 3000);
 	
-	//muss nach einer Drehung in DriveForward
+	//muss nach einer Drehung in DriveForward zu finden im Encoder
 }
 
 void turnRight() {
 	Motor_setPWM(3000, -3000);
 	
-	//muss nach einer Drehung in DriveForward
+	//muss nach einer Drehung in DriveForward zu finden im Encoder
 }
 
 void turnAround(){
 	
-	//muss nach einer Drehung in DriveForward	
+	//muss nach einer Drehung in DriveForward zu finden im Encoder
 }
 
 void turnAdjust(){
@@ -322,25 +322,19 @@ void leftState(){
 }
 
 void rightState(){
-	//drehe nach rechts
-	turnRight();
-	
 	//aktualisiere Himmelsrichtung
 	turnRightCardinalChange(*currentDirectionPtr);
 	
 	//gehe in den nächsten Status
-	setState(DRIVE_FORWARD);
+	setState(TURN_RIGHT);
 }
 
 void backwardState(){
-	//drehe dich um
-	turnAround();
-	
 	//aktualisiere Himmelsrichtung
 	turnBackwardCardinalChange(*currentDirectionPtr);
 	
 	//gehe in den nächsten Modus
-	setState(DRIVE_FORWARD);
+	setState(TURN_AROUND);
 }
 
 void forwardState(){
@@ -396,7 +390,7 @@ void stateMachine() {
 			break;
 		case STOP:
 			Motor_stopAll();
-			setState(IDLE);
+			setState(CHECK_SENSORS);
 			break;
 	}
 }
