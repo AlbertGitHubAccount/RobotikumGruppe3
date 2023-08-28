@@ -176,10 +176,25 @@
     <Compile Include="src\Bumper.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="src\directions.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="src\Encoder.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\Encoder.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\globalVariables.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\globalVariables.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\helperFunctions.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\helperFunctions.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\IR.c">
