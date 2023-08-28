@@ -8,7 +8,7 @@
 extern enum CardinalDirection *currentDirectionPtr;
 
 // Declare a 2D array for visited locations
-extern int visitedArray[10][10]; // Adjust the dimensions as needed
+extern int visitedArray[21][21]; // Adjust the dimensions as needed
 
 // Declare the global variable for the target tile
 struct Tile {

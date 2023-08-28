@@ -13,7 +13,7 @@
 enum CardinalDirection actualCurrentDirection;
 enum CardinalDirection *currentDirectionPtr = &actualCurrentDirection;
 
-int visitedArray[10][10]; // Adjust the dimensions as needed
+int visitedArray[21][21]; // Adjust the dimensions as needed
 
 // Define the global variables for the target tile and current position
 struct Tile targetTile = {0, 0}; // Set initial target tile coordinates
