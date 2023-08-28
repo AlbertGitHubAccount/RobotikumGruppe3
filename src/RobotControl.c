@@ -116,6 +116,23 @@ void chooseDirection(){
 	
 }
 
+void leftState(){
+	setState(DRIVE_FORWARD);
+}
+
+void rightState(){
+	setState(DRIVE_FORWARD);
+}
+
+void backwardState(){
+	setState(DRIVE_FORWARD);
+}
+
+void forwardState(){
+	setState(DRIVE_FORWARD);
+}
+
+
 // Funktion zur Steuerung des Roboters
 void stateMachine() {
 	switch (state) {
@@ -123,10 +140,21 @@ void stateMachine() {
 			break;
 		case CHECK_SENSORS:
 			checkSensors();
+			break;
 		case CHOOSE_DIRECTION:
 			chooseDirection();
-		case DRIVE_FORWARD:
-			driveForward();
+			break;
+		case CHOOSE_LEFT:
+			leftState();
+			break;
+		case CHOOSE_RIGHT;
+			rightState();
+			break;
+		case CHOOSE_BACKWARD;
+			backwardState();
+			break;
+		case CHOOSE_FORWARD;
+			forwardState();
 			break;
 		case DRIVE_BACKWARD:
 			driveBackward();
