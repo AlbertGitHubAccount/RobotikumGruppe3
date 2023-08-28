@@ -58,6 +58,7 @@ SUBDIRS :=  \
 C_SRCS +=  \
 ../src/Bumper.c \
 ../src/Encoder.c \
+../src/globalVariables.c \
 ../src/IR.c \
 ../src/main.c \
 ../src/OwnLaby.c \
@@ -88,6 +89,7 @@ ASM_SRCS +=
 OBJS +=  \
 src/Bumper.o \
 src/Encoder.o \
+src/globalVariables.o \
 src/IR.o \
 src/main.o \
 src/OwnLaby.o \
@@ -111,6 +113,7 @@ lib/tools/labyrinth/labyrinth.o
 OBJS_AS_ARGS +=  \
 src/Bumper.o \
 src/Encoder.o \
+src/globalVariables.o \
 src/IR.o \
 src/main.o \
 src/OwnLaby.o \
@@ -134,6 +137,7 @@ lib/tools/labyrinth/labyrinth.o
 C_DEPS +=  \
 src/Bumper.d \
 src/Encoder.d \
+src/globalVariables.d \
 src/IR.d \
 src/main.d \
 src/OwnLaby.d \
@@ -157,6 +161,7 @@ lib/tools/labyrinth/labyrinth.d
 C_DEPS_AS_ARGS +=  \
 src/Bumper.d \
 src/Encoder.d \
+src/globalVariables.d \
 src/IR.d \
 src/main.d \
 src/OwnLaby.d \
@@ -199,6 +204,13 @@ src/Bumper.o: ../src/Bumper.c
 	
 
 src/Encoder.o: ../src/Encoder.c
+	@echo Building file: $<
+	@echo Invoking: AVR/GNU C Compiler : 5.4.0
+	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DF_CPU=8000000UL  -I"..\src" -I"..\lib" -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\include"  -O2 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -Wextra -pedantic -mmcu=atmega1280 -B "C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\gcc\dev\atmega1280" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	@echo Finished building: $<
+	
+
+src/globalVariables.o: ../src/globalVariables.c
 	@echo Building file: $<
 	@echo Invoking: AVR/GNU C Compiler : 5.4.0
 	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DF_CPU=8000000UL  -I"..\src" -I"..\lib" -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\include"  -O2 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -Wextra -pedantic -mmcu=atmega1280 -B "C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\gcc\dev\atmega1280" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
