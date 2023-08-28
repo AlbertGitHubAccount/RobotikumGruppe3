@@ -7,6 +7,7 @@
 
 // globalVariables.c
 #include "globalVariables.h"
+#include <stdbool.h> 
 
 // Define your global variables here
 enum CardinalDirection actualCurrentDirection;
