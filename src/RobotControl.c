@@ -113,11 +113,15 @@ void checkSensors(){
 }
 
 void chooseDirection(){
-	
+	//Wände chekcen
+	robot_isWall(0);
+	robot_isWall(1);
+	robot_isWall(2);
+	robot_isWall(3);
 }
 
 void leftState(){
-	setState(DRIVE_FORWARD);
+    *currentDirectionPtr = NORTH;
 }
 
 void rightState(){
