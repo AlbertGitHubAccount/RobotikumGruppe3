@@ -36,6 +36,10 @@ Pose_t* position_getAprilTagPose(){
 
 void position_setAprilTagPose(Pose_t* aprilTagPose){
 	truePose = aprilTagPose; //
+	if (truePose->theta > 2.0f * M_PI)
+		truePose->theta -= 2.0f * M_PI;
+	if (truePose->theta < 0.0f)
+		truePose->theta += 2.0f * M_PI;
 }
 
 void position_updateExpectedPose() {

@@ -128,7 +128,8 @@ int8_t robot_getExitDirection(){
 	LPose_t pose = *ownLaby_getPose();
 	Walls_t walls = labyrinth_getWalls(pose.row, pose.column);
 	
-	if (walls.walls < 3){ //Wenn es drei Wände gibt ist es auf keinen Fall der Exit
+	if ((walls.walls != 7) || (walls.walls != 11) || (walls.walls != 13) || (walls.walls != 14)){ //Wenn es drei Wände gibt ist es auf keinen Fall der Exit
+		//		0111				1011					1101					1110
 		if ((ownLaby_getPose()->row == 0) && (walls.wall.north == WALLSTATE_CLEARED)){ //Roboter ist an der Nördlichen Kante
 			if ((ownLaby_getPose()->cardinalDirection == DIRECTION_NORTH))
 				exitDirection = 1;
@@ -210,7 +211,7 @@ bool robot_isWall(RobotDirection_t localDirection){
 	bool isWall = ((walls.walls & (1 << cardinalDirection)) >> cardinalDirection) == WALLSTATE_SET;
 	if (! isWall) {
 		const IR_value_t* IR_value = IR_getIR_value();
-		float IR_specificValue = 50.0f; 
+		float IR_specificValue = 90.0f; 
 		if (localDirection == FORWARD)
 			IR_specificValue = IR_value->frontIR;
 		if (localDirection == LEFT)
@@ -218,7 +219,7 @@ bool robot_isWall(RobotDirection_t localDirection){
 		if (localDirection == RIGHT)
 			IR_specificValue = IR_value->rightIR;
 			
-		if(IR_specificValue < 50.0f){
+		if(IR_specificValue < 90.0f){
 			isWall = true;
 			walls.walls |= 1 << cardinalDirection;
 			labyrinth_setWalls(pose.row, pose.column, walls);
