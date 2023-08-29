@@ -224,7 +224,7 @@ ISR(PCINT0_vect){
 			stopCounter = -10;
 		
 			if (getState() == DRIVE_ADJUST)
-				setState(STOP);
+				setState(RESTING);
 			else
 				setState(TURN_ADJUST);   //TURN_LEFT => DRIVE_FORWARD => TURN_ADJUST => DRIVE_ADJUST => STOP
 		}
