@@ -98,11 +98,11 @@ void turnAdjust(){
 		turnRight();
 }
 
-void wait_90() {
+void resting() {
 	timeTask_time_t now;
 	timeTask_getTimestamp(&now);
-	if (timeTask_getDuration(&startTime, &now) > 1050000UL)
-	setState(STOP);
+	if (timeTask_getDuration(&startTime, &now) > 3000000UL)
+		setState(STOP);
 }
 
 void checkSensors(){
@@ -134,8 +134,8 @@ void stateMachine() {
 		case DRIVE_ADJUST:
 			driveAdjust();
 			break;
-		case WAIT_90:
-			wait_90();
+		case RESTING:
+			resting();
 			break;
 		case TURN_LEFT:
 			turnLeft();
