@@ -80,7 +80,7 @@ void encoder_init() {
 	pinbAlt = PINB & ((1<<PCINT0) | (1<<PCINT1) | (1<<PCINT2) | (1<<PCINT3));
 	//DDRL &= ~((1<<DDL0) | (1<<DDL1) | (1<<DDL2) (1<<DDL3));
 	//PORTL |= (1<<PB0) | (1<<PB1) | (1<<PB2) | (1<<PB3); 
-	// (Nur für normale INT) EICRA &= ~((0<<ISC01) | (1<<ISC00) | (0<<ISC11) (1<<ISC10) | (0<<ISC21) | (1<<ISC20) | (0<<ISC31) | (1<<ISC30));
+	// (Nur fÃ¼r normale INT) EICRA &= ~((0<<ISC01) | (1<<ISC00) | (0<<ISC11) (1<<ISC10) | (0<<ISC21) | (1<<ISC20) | (0<<ISC31) | (1<<ISC30));
 }
 
 int16_t encoder_getCounterL(){
@@ -224,9 +224,10 @@ ISR(PCINT0_vect){
 			stopCounter = -10;
 		
 			if (getState() == DRIVE_ADJUST)
-				setState(STOP);
+				setState(CHECK_SENSORS);
 			else
 				setState(TURN_ADJUST);   //TURN_LEFT => DRIVE_FORWARD => TURN_ADJUST => DRIVE_ADJUST => STOP
+
 		}
 	}
 	
