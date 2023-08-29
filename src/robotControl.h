@@ -20,7 +20,7 @@ typedef enum state {
 	DRIVE_FORWARD,
 	DRIVE_BACKWARD,
 	DRIVE_ADJUST,
-	RESTING,	//Testing Comment
+	RESTING,	//Testing Comment Please grant me Mercy 
 	TURN_LEFT,
 	TURN_RIGHT,
 	TURN_AROUND,
