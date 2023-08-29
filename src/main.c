@@ -29,7 +29,7 @@
  * PRIVATE VARIABLES
  *******************************************************************************
  */
-static bool explorerFlag;
+static bool explorerFlag = false;
 
 
 /*
@@ -85,10 +85,16 @@ static void commUserCommand(const uint8_t* packet, __attribute__((unused)) const
 		setState(DRIVE_FORWARD);
 		break;
 	case 6:
-		ownLaby_explore();
+		setState(EXPLORE);
 		break;
 	case 7:
 		setState(DRIVE_BACKWARD);
+		break;
+	case 8: //CHANGE_EXPLORE_FLAG
+		if (explorerFlag == false)
+			explorerFlag = true;
+		else
+			explorerFlag = false;		
 		break;
 	}
 }
@@ -134,8 +140,6 @@ static void init(void) {
 	encoder_init();
 	ownLaby_init();
 	
-	explorerFlag = true; //'true' für exploren, 'false' für testen
-	
     // global interrupt enable
     sei();
 }
@@ -177,7 +181,7 @@ int main(void) {
             telemetry.infrared2 = ADC_getFilteredValue(1); //Right
             telemetry.infrared3 = ADC_getFilteredValue(2); //Left
             telemetry.infrared4 = 0;
-            telemetry.infrared5 = 0;
+            telemetry.infrared5 = explorerFlag; //zu wenige Telmetrie userdaten
             telemetry.user1 = position_getExpectedPose()->theta;
             telemetry.user2 = encoder_getStopCounter();
             communication_writePacket(CH_OUT_TELEMETRY, (uint8_t*)&telemetry, sizeof(telemetry));
