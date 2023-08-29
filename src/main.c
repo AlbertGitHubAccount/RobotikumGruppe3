@@ -4,6 +4,7 @@
 #include "Position.h"
 #include "path.h"
 #include "OwnLaby.h"
+#include "IR.h"
 
 #include <tools/labyrinth/labyrinth.h>
 #include <stdbool.h>
@@ -96,6 +97,8 @@ static void commUserCommand(const uint8_t* packet, __attribute__((unused)) const
 		else
 			explorerFlag = false;		
 		break;
+	case 9:
+		setState(CHECK_SENSORS);
 	}
 }
 
@@ -133,7 +136,8 @@ static void init(void) {
     Motor_init();
     timeTask_init();
 	ADC_init(true);
-	pathFollower_init();	
+	pathFollower_init();
+	labyrinth_init();	
 	
 	//position_init();
 	bumper_init();
@@ -172,18 +176,19 @@ int main(void) {
 
         TIMETASK(TELEMETRY_TASK, 300) { // execute block approximately every 300ms
             // send telemetry data to HWPCS
-            Telemetry_t telemetry;
+            IR_setIR_value(); // Nötig, damit wir immer die bekommenen Werte von IR setzen
+			Telemetry_t telemetry;
             telemetry.bumpers = bumper_getBumpers(); // initialize with zero
             telemetry.contacts = bumper_getContacts();
             telemetry.encoder1 = encoder_getCounterR();
             telemetry.encoder2 = encoder_getCounterL();
-            telemetry.infrared1 = ADC_getFilteredValue(0); //Front
-            telemetry.infrared2 = ADC_getFilteredValue(1); //Right
-            telemetry.infrared3 = ADC_getFilteredValue(2); //Left
+            telemetry.infrared1 = IR_getIR_value()->frontIR; //Front
+            telemetry.infrared2 = IR_getIR_value()->rightIR; //Right
+            telemetry.infrared3 = IR_getIR_value()->leftIR; //Left
             telemetry.infrared4 = 0;
             telemetry.infrared5 = explorerFlag; //zu wenige Telmetrie userdaten
-            telemetry.user1 = position_getExpectedPose()->theta;
-            telemetry.user2 = encoder_getStopCounter();
+            telemetry.user1 = ownLaby_getPose()->cardinalDirection;
+            telemetry.user2 = position_getExpectedPose()->theta;
             communication_writePacket(CH_OUT_TELEMETRY, (uint8_t*)&telemetry, sizeof(telemetry));
         }
 	

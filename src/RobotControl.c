@@ -107,9 +107,9 @@ void resting() {
 }
 
 void checkSensors(){
-	robot_isWall(0);
-	robot_isWall(1);
-	robot_isWall(2);
+	robot_isWall(LEFT);
+	robot_isWall(FORWARD);
+	robot_isWall(RIGHT);
 }
 
 // Funktion zur Steuerung des Roboters
