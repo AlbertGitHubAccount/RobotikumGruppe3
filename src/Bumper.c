@@ -8,6 +8,7 @@
 #include "robotControl.h"
 
 #include <avr/io.h>					// AVR IO ports
+#include <stdbool.h>
 
 static bitset8_t taster;
 static uint16_t contacts = 0;
@@ -31,14 +32,23 @@ uint8_t bumper_getContacts() {
 
 void bumper_checkCollision() {
 	uint8_t pinl = PINL & ((1<<PL0) | (1<<PL1) | (1<<PL2));
+	bool driveAdjust = false;
 	if(taster.value != pinl){
-		if((pinl & (1<<PL0)) == 0)
+		if((pinl & (1<<PL0)) == 0)//rechts
 			contacts++;
-		if((pinl & (1<<PL1)) == 0)
+		if((pinl & (1<<PL1)) == 0)//links
 			contacts++;
-		if((pinl & (1<<PL2)) == 0)
+		if((pinl & (1<<PL2)) == 0){//vorne
 			contacts++;
-		setState(STOP);	
+			driveAdjust = true;
+		}
+		setState(RESTING);
+		
+		//Adjusten des Roboters nach Wand-kontakt
+		if(driveAdjust == false)
+			setState(TURN_ADJUST);
+		if(driveAdjust == true)
+			setState(DRIVE_ADJUST);
 	}
 		
 	taster.value = pinl;

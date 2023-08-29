@@ -6,7 +6,7 @@
 #include "OwnLaby.h"
 
 #include <tools/labyrinth/labyrinth.h>
-
+#include <stdbool.h>
 #include <io/uart/uart.h>
 #include <communication/communication.h>
 #include <tools/timeTask/timeTask.h>
@@ -29,16 +29,15 @@
  * PRIVATE VARIABLES
  *******************************************************************************
  */
+static bool explorerFlag;
 
 
-//this is a comment
-//Daniel and Marius GithubTest
-// Marius testkommentar
 /*
  *******************************************************************************
  * PRIVATE FUNCTIONS
  *******************************************************************************
  */
+
 
 // callback function for communication channel CH_IN_DEBUG (Debug View in HWPCS)
 static void commDebug(__attribute__((unused)) const uint8_t* packet, const uint16_t size) {
@@ -135,6 +134,8 @@ static void init(void) {
 	encoder_init();
 	ownLaby_init();
 	
+	explorerFlag = true; //'true' für exploren, 'false' für testen
+	
     // global interrupt enable
     sei();
 }
@@ -223,6 +224,12 @@ int main(void) {
 		 TIMETASK(WALL_TASK, 200) {
 			 const LabyrinthWalls_t* wallData = labyrinth_getAllWalls();
 			 communication_writePacket(CH_OUT_LABY_WALLS, (uint8_t*)wallData, sizeof(*wallData));
+		 }
+		 
+		 TIMETASK(EXPLORE_TASK, 300) {
+			 if ((getState() == IDLE) && (explorerFlag == true)){
+				 setState(EXPLORE);
+			 }
 		 }
 		 
         // poll receive buffer (read and parse all available packets from UART buffer)

@@ -79,7 +79,6 @@ void position_setExpectedPose(Pose_t* truePose){
 	expectedPose->theta = truePose->theta;
 }
 	
-
 /*
 const Pose_t* position_getCurrentPose(){
 	return &expectedPose;

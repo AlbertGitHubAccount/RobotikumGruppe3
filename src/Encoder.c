@@ -250,8 +250,14 @@ ISR(PCINT0_vect){
 			
 			if (getState() == TURN_ADJUST)
 				setState(DRIVE_ADJUST);
-			else
-				setState(DRIVE_FORWARD);
+			else 
+			{											//Für Labyrinth von hier, 
+				if (robot_canMove(FORWARD) == true)		//
+					setState(DRIVE_FORWARD);			//
+				else									//
+					setState(RESTING);					//
+			}											//bis hier
+			//setState(RESTING); //Für Testen
 		}
 	}
 	

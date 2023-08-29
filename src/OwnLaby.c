@@ -59,8 +59,6 @@ void ownLaby_setVisitCount(int row, int col) {
 	(*(visit_count[row][col]))++;
 }
 
-
-
 const Position* ownLaby_getTargetTile(){
 	return &target_tile;
 }
@@ -114,6 +112,7 @@ void ownLaby_setRobotPose(const LPose_t* labyPose){
 }*/
 
 void ownLaby_init() {
+	labyrinth_clearAllWalls();
 	memset(visit_count, 0, LABYRINTH_ROWS * LABYRINTH_COLS * sizeof(int));
 	
 	labyPose = *ownLaby_getPose();
@@ -179,7 +178,7 @@ void robot_rotate(RobotDirection_t localDirection){
 		setState(TURN_AROUND);
 }
 
-bool robot_move(RobotDirection_t moveState){
+/*bool robot_move(RobotDirection_t moveState){
 	bool hasMoved = false;
 	if (moveState == FORWARD){
 		if (robot_canMove(moveState) == true){
@@ -189,7 +188,7 @@ bool robot_move(RobotDirection_t moveState){
 	}
 
 	return hasMoved;
-}
+}*/
 
 Direction_t ownLaby_localToCardinal(RobotDirection_t localDirection, Direction_t cardinalDirection){
 	int8_t newCardinalDirection = ((int8_t)localDirection - 1) + ((int8_t)cardinalDirection);
@@ -244,9 +243,11 @@ void ownLaby_explore(){
 	char lowestVisitCount = 127;
 	int8_t exitDir = robot_getExitDirection();
 	
+	
+	
 	if (exitDir > -1) {
 		robot_rotate((RobotDirection_t)exitDir);
-		robot_move(FORWARD);
+		//robot_move(FORWARD);
 	}
 	else {
 		LPose_t pose = *ownLaby_getPose();        
@@ -370,6 +371,7 @@ void ownLaby_explore(){
 	            		        
 		//fprintf(stderr, "Rotating: %s\n", directionToString(leastVisitedDirection));
 		robot_rotate(leastVisitedDirection);
+		//robot_move(FORWARD);
 				 
 		/*if (!robot_move(FORWARD)) {
 			fprintf(stderr, "cannot move forward\n");

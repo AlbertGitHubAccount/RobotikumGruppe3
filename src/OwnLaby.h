@@ -48,7 +48,7 @@ bool robot_isWall(RobotDirection_t localDirection);
 bool robot_canMove(RobotDirection_t localDirection);
 
 void robot_rotate(RobotDirection_t exitDir);
-bool robot_move(RobotDirection_t moveState);
+//bool robot_move(RobotDirection_t moveState);
 
 int8_t robot_getExitDirection();
 void robot_setExitDirection();
