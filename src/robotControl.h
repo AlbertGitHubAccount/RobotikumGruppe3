@@ -25,6 +25,7 @@ typedef enum state {
 	TURN_RIGHT,
 	TURN_AROUND,
 	TURN_ADJUST,
+	DRIVE_EXIT,
 	STOP
 } state_t;
 

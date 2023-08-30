@@ -78,8 +78,8 @@ Pose_t* position_getExpectedPose(){
 }
 
 void position_setExpectedPose(Pose_t* truePose){
-	expectedPose->x = truePose->x;
-	expectedPose->y = truePose->y;
+	expectedPose->x		= truePose->x;
+	expectedPose->y		= truePose->y;
 	expectedPose->theta = truePose->theta;
 }
 	

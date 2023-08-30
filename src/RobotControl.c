@@ -84,17 +84,16 @@ void turnRight() {
 }
 
 void turnAdjust(){
-	float dtheta = position_getExpectedPose()->theta + M_PI_4;
-	if (dtheta > 2.0f * M_PI_2)
+	float dtheta = position_getExpectedPose()->theta - ownLaby_getRobotPose()->theta;
+	if (dtheta > M_PI_4)
 		dtheta -= 2.0f * M_PI_2;
 	
-	float dthetaWanted = ownLaby_getRobotPose()->theta  + M_PI_4;
-	if (dthetaWanted > 2.0f * M_PI_2)
-		dthetaWanted -= 2.0f * M_PI_2;
+	if (dtheta < M_PI_4)
+		dtheta += 2.0f * M_PI_2;
 		
-	if (dtheta < dthetaWanted)
+	if (dtheta <= 0.0f)
 		turnLeft();
-	if (dtheta > dthetaWanted)
+	if (dtheta  > 0.0f)
 		turnRight();
 }
 
@@ -104,6 +103,15 @@ void resting() {
 	timeTask_getTimestamp(&now);
 	if (timeTask_getDuration(&startTime, &now) > 3000000UL)
 		setState(IDLE);
+}
+
+void drive_exit() {
+	Motor_setPWM(3000, 3010);
+	timeTask_time_t now;
+	timeTask_getTimestamp(&now);
+	if (timeTask_getDuration(&startTime, &now) > 3000000UL){
+		Motor_stopAll();
+	}
 }
 
 void checkSensors(){
@@ -148,6 +156,8 @@ void stateMachine() {
 		case TURN_ADJUST:
 			turnAdjust();
 			break;
+		case DRIVE_EXIT:
+			drive_exit();
 		case STOP:
 			Motor_stopAll();
 			setState(IDLE);

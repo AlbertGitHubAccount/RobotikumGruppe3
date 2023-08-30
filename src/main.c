@@ -99,6 +99,13 @@ static void commUserCommand(const uint8_t* packet, __attribute__((unused)) const
 		break;
 	case 9:
 		setState(CHECK_SENSORS);
+		break;
+	case 10:
+		setState(DRIVE_ADJUST);
+		break;
+	case 11:
+		setState(TURN_ADJUST);
+		break;
 	}
 }
 
