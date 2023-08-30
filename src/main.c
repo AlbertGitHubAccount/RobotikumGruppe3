@@ -187,13 +187,13 @@ int main(void) {
             telemetry.infrared3 = IR_getIR_value()->leftIR; //Left
             telemetry.infrared4 = 0;
             telemetry.infrared5 = explorerFlag; //zu wenige Telmetrie userdaten
-            telemetry.user1 = ownLaby_getPose()->cardinalDirection;
-            telemetry.user2 = position_getExpectedPose()->theta;
+            telemetry.user1 = ownLaby_getRobotPose()->x;
+            telemetry.user2 = ownLaby_getRobotPose()->y;
             communication_writePacket(CH_OUT_TELEMETRY, (uint8_t*)&telemetry, sizeof(telemetry));
         }
 	
 		TIMETASK(POSE_TASK, 150) { // execute block approximately every 150ms				alter Timetask der OHNE APRILTAG arbeitet
-			Pose_t* truePose = position_getAprilTagPose();
+			Pose_t* truePose = position_getAprilTagPose();			
 			position_setExpectedPose(truePose);
 			const Pose_t* expectedPose = position_getExpectedPose();						
 			// send pose update to HWPCS

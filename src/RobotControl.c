@@ -110,6 +110,7 @@ void checkSensors(){
 	robot_isWall(LEFT);
 	robot_isWall(FORWARD);
 	robot_isWall(RIGHT);
+	setState(IDLE);
 }
 
 // Funktion zur Steuerung des Roboters
