@@ -6,6 +6,7 @@
  */ 
 #include "Bumper.h"
 #include "robotControl.h"
+#include "OwnLaby.h"
 
 #include <avr/io.h>					// AVR IO ports
 #include <stdbool.h>
@@ -36,10 +37,13 @@ void bumper_checkCollision() {
 	if(taster.value != pinl){
 		if((pinl & (1<<PL0)) == 0)//rechts
 			contacts++;
+			robot_isWall(RIGHT);
 		if((pinl & (1<<PL1)) == 0)//links
 			contacts++;
+			robot_isWall(LEFT);
 		if((pinl & (1<<PL2)) == 0){//vorne
 			contacts++;
+			robot_isWall(FORWARD);
 			driveAdjust = true;
 		}
 		setState(RESTING);

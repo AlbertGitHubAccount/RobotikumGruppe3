@@ -10,6 +10,7 @@
 #include "robotControl.h"
 #include "path.h"
 #include "OwnLaby.h"
+#include "IR.h"
 
 #include <avr/io.h>
 #include <math.h>
@@ -28,7 +29,7 @@ static int16_t stopCounter = -10;
 
 
 void calcStopCounter_Turn(){
-	float dtheta;
+	float dtheta = M_PI_4;
 	if ((getState() == TURN_LEFT) || (getState() == TURN_RIGHT)){
 		dtheta = M_PI_2;
 	}
@@ -36,16 +37,14 @@ void calcStopCounter_Turn(){
 		dtheta = M_PI;
 	}
 	if (getState() == TURN_ADJUST){
-		dtheta = position_getExpectedPose()->theta + M_PI_4;
-		if (dtheta > 2.0f * M_PI_2)
+		dtheta = position_getExpectedPose()->theta - ownLaby_getRobotPose()->theta;
+		if (dtheta > M_PI_4)
 			dtheta -= 2.0f * M_PI_2;
 		
-		float dthetaWanted = ownLaby_getRobotPose()->theta  + M_PI_4;
-		if (dthetaWanted > 2.0f * M_PI_2)
-			dthetaWanted -= 2.0f * M_PI_2;
+		if (dtheta < M_PI_4)
+			dtheta += 2.0f * M_PI_2;
 		
-		dtheta -= dthetaWanted;
-		if (dtheta < 0.0f)
+		if (dtheta <= 0.0f)
 			dtheta = -1.0f * dtheta;
 	}
 	stopCounter	= (int16_t) ((dtheta * value_robotParams.axleWidth / value_robotParams.distPerTick));
@@ -219,6 +218,10 @@ ISR(PCINT0_vect){
 			}
 		}
 		
+		if (IR_getIR_value()->frontIR < 45) {
+			stopCounter = -10;
+			setState(DRIVE_ADJUST);
+		}
 		
 		if (stopCounter <= 0) {
 			stopCounter = -10;

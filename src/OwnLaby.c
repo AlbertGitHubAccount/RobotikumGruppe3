@@ -76,11 +76,11 @@ void ownLaby_setPose(){
 	labyPose.row	= (uint8_t) floor(( position_getExpectedPose()->x + 3.5f * LABY_CELLSIZE) / LABY_CELLSIZE);
 	labyPose.column = (uint8_t) floor((-position_getExpectedPose()->y + 3.5f * LABY_CELLSIZE) / LABY_CELLSIZE);
 	
-	float adjustedTheta = position_getExpectedPose()->theta + 1.0f * M_PI_4;
+	float adjustedTheta = position_getExpectedPose()->theta + M_PI_4;
 	if (adjustedTheta >= 2.0f * M_PI)
 		adjustedTheta -= 2.0f * M_PI;
 	
-	adjustedTheta = -(floor(adjustedTheta/(1.0f * M_PI_2))) + 5.0f;
+	adjustedTheta = -(floor(adjustedTheta/(M_PI_2))) + 5.0f;
 	if (adjustedTheta >= 4.0f)
 		adjustedTheta -= 4.0f;
 	
@@ -251,7 +251,7 @@ void ownLaby_explore(){
 	
 	if (exitDir > -1) {
 		robot_rotate((RobotDirection_t)exitDir);
-		//robot_move(FORWARD);
+		setState(DRIVE_EXIT);
 	}
 	else {
 		LPose_t pose = *ownLaby_getPose();        
