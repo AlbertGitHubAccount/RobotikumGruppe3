@@ -38,7 +38,7 @@ timeTask_time_t getStartTime(){
 }
 
 void driveForward() {
-	Motor_setPWM(3000, 3010);
+	Motor_setPWM(2500, 2508);
 }
 
 void driveBackward() {
@@ -47,7 +47,7 @@ void driveBackward() {
 
 void driveAdjust() {
 	if (ownLaby_getPose()->cardinalDirection == DIRECTION_NORTH){
-		if (ownLaby_getRobotPose()->y < position_getExpectedPose()->y)
+		if (ownLaby_getRobotPose()->y > position_getExpectedPose()->y)
 			driveForward();
 		else
 			driveBackward();
@@ -61,7 +61,7 @@ void driveAdjust() {
 	}
 	
 	if (ownLaby_getPose()->cardinalDirection == DIRECTION_SOUTH){
-		if (ownLaby_getRobotPose()->y > position_getExpectedPose()->y)
+		if (ownLaby_getRobotPose()->y < position_getExpectedPose()->y)
 			driveForward();
 		else
 			driveBackward();
@@ -85,11 +85,11 @@ void turnRight() {
 
 void turnAdjust(){
 	float dtheta = position_getExpectedPose()->theta - ownLaby_getRobotPose()->theta;
-	if (dtheta > M_PI_4)
-		dtheta -= 2.0f * M_PI_2;
+	if (dtheta >  M_PI_4)
+		dtheta -= 2.0f * M_PI;
 	
-	if (dtheta < M_PI_4)
-		dtheta += 2.0f * M_PI_2;
+	if (dtheta < -M_PI_4)
+		dtheta += 2.0f * M_PI;
 		
 	if (dtheta <= 0.0f)
 		turnLeft();
@@ -106,7 +106,7 @@ void resting() {
 }
 
 void drive_exit() {
-	Motor_setPWM(3000, 3010);
+	driveForward();
 	timeTask_time_t now;
 	timeTask_getTimestamp(&now);
 	if (timeTask_getDuration(&startTime, &now) > 3000000UL){

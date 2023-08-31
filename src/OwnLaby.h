@@ -32,6 +32,8 @@ typedef struct __attribute__((__packed__)) {
 	int8_t y;
 }Position;
 
+const Position* ownLaby_getCurrentPosition();
+
 LPose_t labyPose;
 const LPose_t* ownLaby_getPose();
 void ownLaby_setPose();

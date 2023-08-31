@@ -42,7 +42,7 @@ void position_setAprilTagPose(Pose_t* aprilTagPose){
 		truePose->theta += 2.0f * M_PI;
 }
 
-void position_updateExpectedPose() {
+void position_updateExpectedPose(Pose_t* expectedPose) {
 	int16_t l;
 	int16_t r;
 	encoder_getCountersAndReset(&l, &r);
@@ -77,7 +77,13 @@ Pose_t* position_getExpectedPose(){
 	return expectedPose;
 }
 
-void position_setExpectedPose(Pose_t* truePose){
+void position_setExpectedPose(const Pose_t* newExpectedPose){
+	expectedPose->x		= newExpectedPose->x;
+	expectedPose->y		= newExpectedPose->y;
+	expectedPose->theta	= newExpectedPose->theta;
+}
+
+void position_setTruePoseToExpectedPose(Pose_t* truePose){
 	expectedPose->x		= truePose->x;
 	expectedPose->y		= truePose->y;
 	expectedPose->theta = truePose->theta;
@@ -100,5 +106,5 @@ Pose_t position_getPoseDifference(){
 }
 
 void position_init(){
-	position_setExpectedPose(truePose);
+	position_setTruePoseToExpectedPose(truePose);
 }
