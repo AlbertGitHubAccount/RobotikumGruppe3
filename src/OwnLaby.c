@@ -117,9 +117,9 @@ void ownLaby_init() {
 	
 	labyPose = *ownLaby_getPose();
 	
-	current_position	= *ownLaby_getCurrentPosition();
-	ownLaby_setTargetTile(current_position, -3, -3);
-	target_tile			= *ownLaby_getTargetTile();
+	//current_position	= *ownLaby_getCurrentPosition();
+	//ownLaby_setTargetTile(current_position, -3, -3);
+	//target_tile			= *ownLaby_getTargetTile();
 } // explore()
 
 int8_t robot_getExitDirection(){
@@ -256,7 +256,7 @@ void ownLaby_explore(){
 	else {
 		LPose_t pose = *ownLaby_getPose();        
 
-		visit_count[current_position.x][current_position.y]++;
+		visit_count[pose.row][pose.column]++;
 		/*fprintf(stderr, "Current position: (%d, %d, %d)\n", current_position.x, current_position.y, pose.cardinalDirection);
 		fprintf(stderr, "Visited (%d)\n", visit_count[current_position.x][current_position.y]);*/
 
@@ -268,108 +268,108 @@ void ownLaby_explore(){
 	    //Check direction robot is facing and calculating distances relative to its direction
 	    if (pose.cardinalDirection == DIRECTION_NORTH){
 			if (canMoveForward == true) {
-				lowestVisitCount = *visit_count[current_position.x][current_position.y+1];
+				lowestVisitCount = *visit_count[pose.row][pose.column+1];
 				leastVisitedDirection = FORWARD;
-				ownLaby_setTargetTile(current_position, 0, 1);
+				//ownLaby_setTargetTile(current_position, 0, 1);
 			}
 			if (canMoveLeft == true){
-				if (lowestVisitCount > *visit_count[current_position.x-1][current_position.y]){
-					lowestVisitCount = *visit_count[current_position.x-1][current_position.y];
+				if (lowestVisitCount > *visit_count[pose.row-1][pose.column]){
+					lowestVisitCount = *visit_count[pose.row-1][pose.column];
 					leastVisitedDirection = LEFT;
-					ownLaby_setTargetTile(current_position, -1, 0);
+					//ownLaby_setTargetTile(current_position, -1, 0);
 				}
 			}
 			if (canMoveRight == true){
-				if (lowestVisitCount > *visit_count[current_position.x+1][current_position.y]){
-					lowestVisitCount = *visit_count[current_position.x+1][current_position.y];
+				if (lowestVisitCount > *visit_count[pose.row+1][pose.column]){
+					lowestVisitCount = *visit_count[pose.row+1][pose.column];
 					leastVisitedDirection = RIGHT;
-					ownLaby_setTargetTile(current_position, 1, 0);
+					//ownLaby_setTargetTile(current_position, 1, 0);
 				}
 			}
 			if (!canMoveRight && !canMoveLeft && !canMoveForward){
 				leastVisitedDirection = BACKWARD;
-				ownLaby_setTargetTile(current_position, 0, -1);
+				//ownLaby_setTargetTile(current_position, 0, -1);
 			}
 		}
 	            	
 		//Check that happens if Robot is facing Left
 		if (pose.cardinalDirection == DIRECTION_WEST){
 			if (canMoveForward == true ) {
-				lowestVisitCount = *visit_count[current_position.x-1][current_position.y];
+				lowestVisitCount = *visit_count[pose.row-1][pose.column];
 				leastVisitedDirection = FORWARD;
-				ownLaby_setTargetTile(current_position, -1, 0);
+				//ownLaby_setTargetTile(current_position, -1, 0);
 			}
 			if (canMoveLeft == true){
-				if (lowestVisitCount > *visit_count[current_position.x][current_position.y-1]){
-					lowestVisitCount = *visit_count[current_position.x][current_position.y-1];
+				if (lowestVisitCount > *visit_count[pose.row][pose.column-1]){
+					lowestVisitCount = *visit_count[pose.row][pose.column-1];
 					leastVisitedDirection = LEFT;
-					ownLaby_setTargetTile(current_position, 0, -1);
+					//ownLaby_setTargetTile(current_position, 0, -1);
 				}
 			}
 			if (canMoveRight == true){
-				if (lowestVisitCount > *visit_count[current_position.x][current_position.y+1]){
-					lowestVisitCount = *visit_count[current_position.x][current_position.y+1];
+				if (lowestVisitCount > *visit_count[pose.row][pose.column+1]){
+					lowestVisitCount = *visit_count[pose.row][pose.column+1];
 					leastVisitedDirection = RIGHT;
-					ownLaby_setTargetTile(current_position, 0, 1);
+					//ownLaby_setTargetTile(current_position, 0, 1);
 				}
 			}
 			if (!canMoveRight && !canMoveLeft && !canMoveForward){
 				leastVisitedDirection = BACKWARD;
-				ownLaby_setTargetTile(current_position, 1, 0);
+				//ownLaby_setTargetTile(current_position, 1, 0);
 			}
 		}
 	            	
 		//Check that happens if Robot is facing Right       	
 		if (pose.cardinalDirection == DIRECTION_EAST){
 			if (canMoveForward == true ) {
-				lowestVisitCount = *visit_count[current_position.x+1][current_position.y];
+				lowestVisitCount = *visit_count[pose.row+1][pose.column];
 				leastVisitedDirection = FORWARD;
-				ownLaby_setTargetTile(current_position, 1, 0);
+				//ownLaby_setTargetTile(current_position, 1, 0);
 			}
 			if (canMoveLeft == true){
-				if (lowestVisitCount > *visit_count[current_position.x][current_position.y+1]){
-					lowestVisitCount = *visit_count[current_position.x][current_position.y+1];
+				if (lowestVisitCount > *visit_count[pose.row][pose.column+1]){
+					lowestVisitCount = *visit_count[pose.row][pose.column+1];
 					leastVisitedDirection = LEFT;
-					ownLaby_setTargetTile(current_position, 0, 1);
+					//ownLaby_setTargetTile(current_position, 0, 1);
 				}
 			}
 			if (canMoveRight == true){
-				if (lowestVisitCount > *visit_count[current_position.x][current_position.y-1]){
-					lowestVisitCount = *visit_count[current_position.x][current_position.y-1];
+				if (lowestVisitCount > *visit_count[pose.row][pose.column-1]){
+					lowestVisitCount = *visit_count[pose.row][pose.column-1];
 					leastVisitedDirection = RIGHT;
-					ownLaby_setTargetTile(current_position, 0, -1);
+					//ownLaby_setTargetTile(current_position, 0, -1);
 				}
 			}
 			if (!canMoveRight && !canMoveLeft && !canMoveForward){
 				leastVisitedDirection = BACKWARD;
-				ownLaby_setTargetTile(current_position, -1, 0);
+				//ownLaby_setTargetTile(current_position, -1, 0);
 			}
 		}
 	            	
 		//Robot is facing Downwards
 		if (pose.cardinalDirection == DIRECTION_SOUTH){
 			if (canMoveForward == true ) {
-				lowestVisitCount = *visit_count[current_position.x][current_position.y-1];
+				lowestVisitCount = *visit_count[pose.row][pose.column-1];
 				leastVisitedDirection = FORWARD;
-				ownLaby_setTargetTile(current_position, 0, -1);
+				//ownLaby_setTargetTile(current_position, 0, -1);
 			}
 			if (canMoveLeft == true){
-				if (lowestVisitCount > *visit_count[current_position.x+1][current_position.y]){
-					lowestVisitCount = *visit_count[current_position.x+1][current_position.y];
+				if (lowestVisitCount > *visit_count[pose.row+1][pose.column]){
+					lowestVisitCount = *visit_count[pose.row+1][pose.column];
 					leastVisitedDirection = LEFT;
-					ownLaby_setTargetTile(current_position, 1, 0);
+					//ownLaby_setTargetTile(current_position, 1, 0);
 				}
 			}
 			if (canMoveRight == true){
-				if (lowestVisitCount > *visit_count[current_position.x-1][current_position.y]){
-					lowestVisitCount = *visit_count[current_position.x-1][current_position.y];
+				if (lowestVisitCount > *visit_count[pose.row-1][pose.column]){
+					lowestVisitCount = *visit_count[pose.row-1][pose.column];
 					leastVisitedDirection = RIGHT;
-					ownLaby_setTargetTile(current_position, -1, 0);
+					//ownLaby_setTargetTile(current_position, -1, 0);
 				}
 			}
 			if (!canMoveRight && !canMoveLeft && !canMoveForward){
 				leastVisitedDirection = BACKWARD;
-				ownLaby_setTargetTile(current_position, 0, 1);
+				//ownLaby_setTargetTile(current_position, 0, 1);
 			}
 		}
 	            		        
@@ -381,7 +381,6 @@ void ownLaby_explore(){
 			fprintf(stderr, "cannot move forward\n");
 		}*/
 				 
-		current_position = *ownLaby_getCurrentPosition();
 		/*fprintf(stderr, "\n");*/
 
 				/*

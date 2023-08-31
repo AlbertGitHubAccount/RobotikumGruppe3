@@ -46,7 +46,11 @@ void bumper_checkCollision() {
 			robot_isWall(FORWARD);
 			driveAdjust = true;
 		}
-		setState(RESTING);
+		
+		if (getState() != RESTING){
+			setState(RESTING);
+		}
+		
 		
 		//Adjusten des Roboters nach Wand-kontakt
 		if(driveAdjust == false)

@@ -192,20 +192,30 @@ int main(void) {
             telemetry.infrared1 = IR_getIR_value()->frontIR; //Front
             telemetry.infrared2 = IR_getIR_value()->rightIR; //Right
             telemetry.infrared3 = IR_getIR_value()->leftIR; //Left
-            telemetry.infrared4 = 0;
+            telemetry.infrared4 = getState();
             telemetry.infrared5 = explorerFlag; //zu wenige Telmetrie userdaten
-            telemetry.user1 = ownLaby_getRobotPose()->x;
-            telemetry.user2 = ownLaby_getRobotPose()->y;
+            telemetry.user1 = ownLaby_getPose()->row;
+            telemetry.user2 = ownLaby_getPose()->column;
             communication_writePacket(CH_OUT_TELEMETRY, (uint8_t*)&telemetry, sizeof(telemetry));
         }
 	
 		TIMETASK(POSE_TASK, 150) { // execute block approximately every 150ms				alter Timetask der OHNE APRILTAG arbeitet
-			Pose_t* truePose = position_getAprilTagPose();			
-			position_setExpectedPose(truePose);
-			const Pose_t* expectedPose = position_getExpectedPose();						
+			Pose_t* expectedPose = position_getExpectedPose();
+			position_updateExpectedPose(expectedPose);
+			//position_setExpectedPose(expectedPose);	
+			expectedPose = position_getExpectedPose();					
 			// send pose update to HWPCS
 			communication_writePacket(CH_OUT_POSE, (uint8_t*)expectedPose, sizeof(*expectedPose));
 		}
+		
+		TIMETASK(SET_APRIL_ON_EXPECTED_TASK, 500) { // setz April auf expectedPose alle 25 Sekunden	
+			Pose_t* truePose = position_getAprilTagPose();
+			position_setTruePoseToExpectedPose(truePose);
+			Pose_t* expectedPose = position_getExpectedPose();
+			// send pose update to HWPCS
+			communication_writePacket(CH_OUT_POSE, (uint8_t*)expectedPose, sizeof(*expectedPose));
+		}
+		
 		
 		TIMETASK(APRIL_TAG_TASK, 150){ //GetPose_t um Daten von MAIN_APRIL_TAG zu requesten
 			GetPose_t aprilTag;

@@ -38,11 +38,11 @@ void calcStopCounter_Turn(){
 	}
 	if (getState() == TURN_ADJUST){
 		dtheta = position_getExpectedPose()->theta - ownLaby_getRobotPose()->theta;
-		if (dtheta > M_PI_4)
-			dtheta -= 2.0f * M_PI_2;
+		if (dtheta >  M_PI_4)
+			dtheta -= 2.0f * M_PI;
 		
-		if (dtheta < M_PI_4)
-			dtheta += 2.0f * M_PI_2;
+		if (dtheta < -M_PI_4)
+			dtheta += 2.0f * M_PI;
 		
 		if (dtheta <= 0.0f)
 			dtheta = -1.0f * dtheta;
@@ -218,7 +218,7 @@ ISR(PCINT0_vect){
 			}
 		}
 		
-		if (IR_getIR_value()->frontIR < 45) {
+		if ((IR_getIR_value()->frontIR < 45) && (getState() != DRIVE_ADJUST)) {
 			stopCounter = -10;
 			setState(DRIVE_ADJUST);
 		}
@@ -253,6 +253,7 @@ ISR(PCINT0_vect){
 			
 			if (getState() == TURN_ADJUST)
 				setState(DRIVE_ADJUST);
+				//setState(RESTING); //Für Testen
 			else 
 			{											//Für Labyrinth von hier, 
 				if (robot_canMove(FORWARD) == true)		//
