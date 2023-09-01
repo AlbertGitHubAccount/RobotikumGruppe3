@@ -26,7 +26,7 @@
 #define START_Y 11
 
 LPose_t labyPose = {3, 3, 0};
-Pose_t labyRobotPose = {0.0f, 0.0f, M_PI/2};
+Pose_t labyRobotPose = {0.0f, 0.0f, M_PI_2};
 
 int* visit_count[LABYRINTH_ROWS][LABYRINTH_COLS];
 Position current_position;
@@ -115,12 +115,11 @@ void ownLaby_init() {
 	labyrinth_clearAllWalls();
 	memset(visit_count, 0, LABYRINTH_ROWS * LABYRINTH_COLS * sizeof(int));
 	
-	labyPose = *ownLaby_getPose();
-	
+	//labyPose = *ownLaby_getPose();
 	//current_position	= *ownLaby_getCurrentPosition();
 	//ownLaby_setTargetTile(current_position, -3, -3);
 	//target_tile			= *ownLaby_getTargetTile();
-} // explore()
+}
 
 int8_t robot_getExitDirection(){
 	int8_t exitDirection = -1;

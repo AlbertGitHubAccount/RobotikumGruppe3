@@ -218,9 +218,9 @@ ISR(PCINT0_vect){
 			}
 		}
 		
-		if ((IR_getIR_value()->frontIR < 45) && (getState() != DRIVE_ADJUST)) {
+		if ((IR_getIR_value()->frontIR < 45) && (getState() == DRIVE_FORWARD)) {
 			stopCounter = -10;
-			setState(DRIVE_ADJUST);
+			setState(TURN_ADJUST);
 		}
 		
 		if (stopCounter <= 0) {

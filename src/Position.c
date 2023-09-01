@@ -17,10 +17,10 @@
 
 RobotParameters_t value_robotParams = { .axleWidth = 134.0f, .distPerTick = 45.0f * 1.1494f * M_PI / 1024.0f, .user1 = 0.0f, .user2 = 0.0f };
 
-static Pose_t* expectedPose;
-static Pose_t* truePose;
+Pose_t expectedPose = {0.0f, 0.0f, M_PI_2};
+Pose_t truePose = {0.0f, 0.0f, M_PI_2};
 
-static Pose_t poseDifference;
+//static Pose_t poseDifference;
 
 RobotParameters_t position_getRobotParams(){
 	return value_robotParams;
@@ -30,16 +30,16 @@ void position_setRobotParams(const RobotParameters_t* robotParams){
 	value_robotParams = *robotParams;
 }
 
-Pose_t* position_getAprilTagPose(){
-	return truePose; //For better path
+const Pose_t* position_getAprilTagPose(){
+	return &truePose; //For better path
 }
 
-void position_setAprilTagPose(Pose_t* aprilTagPose){
-	truePose = aprilTagPose; //
-	if (truePose->theta > 2.0f * M_PI)
-		truePose->theta -= 2.0f * M_PI;
-	if (truePose->theta < 0.0f)
-		truePose->theta += 2.0f * M_PI;
+void position_setAprilTagPose(const Pose_t* aprilTagPose){
+	truePose = *aprilTagPose; //
+	if (truePose.theta > 2.0f * M_PI)
+		truePose.theta -= 2.0f * M_PI;
+	if (truePose.theta < 0.0f)
+		truePose.theta += 2.0f * M_PI;
 }
 
 void position_updateExpectedPose(Pose_t* expectedPose) {
@@ -73,38 +73,41 @@ void position_updateExpectedPose(Pose_t* expectedPose) {
 	expectedPose->y		+= dy;
 }
 
-Pose_t* position_getExpectedPose(){
-	return expectedPose;
+const Pose_t* position_getExpectedPose(){
+	return &expectedPose;
 }
 
+/*
 void position_setExpectedPose(const Pose_t* newExpectedPose){
 	expectedPose->x		= newExpectedPose->x;
 	expectedPose->y		= newExpectedPose->y;
 	expectedPose->theta	= newExpectedPose->theta;
 }
+*/
 
 void position_setTruePoseToExpectedPose(Pose_t* truePose){
-	expectedPose->x		= truePose->x;
-	expectedPose->y		= truePose->y;
-	expectedPose->theta = truePose->theta;
+	expectedPose.x		= truePose->x;
+	expectedPose.y		= truePose->y;
+	expectedPose.theta = truePose->theta;
 }
 	
 /*
 const Pose_t* position_getCurrentPose(){
 	return &expectedPose;
 }
-*/
 
 void position_setPoseDifference(){
 	poseDifference.x		= truePose->x		- expectedPose->x;
 	poseDifference.y		= truePose->y		- expectedPose->y;
 	poseDifference.theta	= truePose->theta	- expectedPose->theta;
 }
+
 	
 Pose_t position_getPoseDifference(){
 	return poseDifference;
 }
+*/
 
 void position_init(){
-	position_setTruePoseToExpectedPose(truePose);
+	position_setTruePoseToExpectedPose(&truePose);
 }

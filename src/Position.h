@@ -20,13 +20,15 @@ RobotParameters_t value_robotParams;
 RobotParameters_t position_getRobotParams();
 void position_setRobotParams(const RobotParameters_t* robotParams);
 
+Pose_t expectedPose;
 void position_updateExpectedPose(Pose_t* expectedPose);
-Pose_t* position_getExpectedPose();
+const Pose_t* position_getExpectedPose();
 //void position_setExpectedPose(Pose_t* newExpectedPose);
 //const Pose_t* position_getCurrentPose();
 
-void position_setAprilTagPose(Pose_t* aprilTagPose);
-Pose_t* position_getAprilTagPose();
+Pose_t truePose;
+void position_setAprilTagPose(const Pose_t* aprilTagPose);
+const Pose_t* position_getAprilTagPose();
 
 void position_setTruePoseToExpectedPose(Pose_t* truePose);
 

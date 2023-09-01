@@ -30,7 +30,8 @@
  * PRIVATE VARIABLES
  *******************************************************************************
  */
-static bool explorerFlag = false;
+static bool	explorerFlag = false;
+static Pose_t oldTruePose = {0.0f, 0.0f, M_PI_2};
 
 
 /*
@@ -199,21 +200,25 @@ int main(void) {
             communication_writePacket(CH_OUT_TELEMETRY, (uint8_t*)&telemetry, sizeof(telemetry));
         }
 	
-		TIMETASK(POSE_TASK, 150) { // execute block approximately every 150ms				alter Timetask der OHNE APRILTAG arbeitet
-			Pose_t* expectedPose = position_getExpectedPose();
-			position_updateExpectedPose(expectedPose);
+		TIMETASK(POSE_TASK, 100) { // execute block approximately every 150ms				alter Timetask der OHNE APRILTAG arbeitet
+			//expectedPose = *position_getExpectedPose();
+			position_updateExpectedPose(&expectedPose);
 			//position_setExpectedPose(expectedPose);	
-			expectedPose = position_getExpectedPose();					
+			//expectedPose = position_getExpectedPose();					
 			// send pose update to HWPCS
-			communication_writePacket(CH_OUT_POSE, (uint8_t*)expectedPose, sizeof(*expectedPose));
+			communication_writePacket(CH_OUT_POSE, (uint8_t*)&expectedPose, sizeof(expectedPose));
 		}
 		
-		TIMETASK(SET_APRIL_ON_EXPECTED_TASK, 500) { // setz April auf expectedPose alle 25 Sekunden	
-			Pose_t* truePose = position_getAprilTagPose();
-			position_setTruePoseToExpectedPose(truePose);
-			Pose_t* expectedPose = position_getExpectedPose();
+		TIMETASK(SET_APRIL_ON_EXPECTED_TASK, 150) { //überschreibe die Pose wenn das AprilTag geupdatet wird
+			//Pose_t compareTruePose = *position_getAprilTagPose();
+			if ((oldTruePose.x != truePose.x) || (oldTruePose.y != truePose.y) || (oldTruePose.theta != truePose.theta)){
+				position_setTruePoseToExpectedPose(&truePose);
+				oldTruePose = truePose;
+			}
+			
+			//expectedPose = position_getExpectedPose();
 			// send pose update to HWPCS
-			communication_writePacket(CH_OUT_POSE, (uint8_t*)expectedPose, sizeof(*expectedPose));
+			//communication_writePacket(CH_OUT_POSE, (uint8_t*)&expectedPose, sizeof(expectedPose));
 		}
 		
 		
@@ -223,22 +228,22 @@ int main(void) {
 			communication_writePacket(CH_OUT_GET_POSE, (uint8_t*)&aprilTag, sizeof(aprilTag));
 		}
 		
-		TIMETASK(APRIL_POSE_TASK, 150) { // TimeTask der Pose von AprilTag nimmt
-			Pose_t* truePose = position_getAprilTagPose();
-			const LPose_t* labyPose = ownLaby_getPose();
+		TIMETASK(LABY_POSE_TASK, 150) { // TimeTask die LabyPose updated (und somit auch LabyRobotPose)
+			//truePose = *position_getAprilTagPose();
+			//const LPose_t* labyPose = ownLaby_getPose();
 			//Pose_t* expectedPose = position_getAprilTagPose();
-			ownLaby_setPose(truePose);
-			ownLaby_setRobotPose(labyPose);
+			ownLaby_setPose();
+			ownLaby_setRobotPose(&labyPose);
 			// send pose update to HWPCS
-			communication_writePacket(CH_OUT_POSE, (uint8_t*)&truePose, sizeof(truePose));
+			//communication_writePacket(CH_OUT_POSE, (uint8_t*)&truePose, sizeof(truePose));
 		}
         
 		 TIMETASK(FOLLOWER_TASK, 20) {	
 			const PathFollowerStatus_t* pathFollower_status = pathFollower_getStatus();
 			if (pathFollower_status->enabled) {
-				const Pose_t* expectedPose = position_getExpectedPose();
-				if (pathFollower_update(expectedPose))
-					calculateDriveCommand(expectedPose, &pathFollower_status->lookahead);
+				const Pose_t* currentPose = position_getExpectedPose();
+				if (pathFollower_update(currentPose))
+					calculateDriveCommand(currentPose, &pathFollower_status->lookahead);
 				else{
 					Motor_stopAll();
 					pathFollower_command(FOLLOWER_CMD_RESET);	
