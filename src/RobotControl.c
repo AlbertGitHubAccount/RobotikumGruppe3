@@ -15,11 +15,13 @@
 #include <communication/packetTypes.h>
 #include <tools/labyrinth/labyrinth.h>
 #include <math.h>
+#include <stdbool.h>
                  
 #include "robotControl.h"
 #include "IR.h"
 #include "OwnLaby.h"
 #include "Position.h"
+#include "Bumper.h"
 
 
 static state_t state = IDLE;
@@ -38,40 +40,47 @@ timeTask_time_t getStartTime(){
 }
 
 void driveForward() {
-	Motor_setPWM(2500, 2508);
+	Motor_setPWM(2500, 2600);
 }
 
 void driveBackward() {
-	Motor_setPWM(-1500, -1505);
+	Motor_setPWM(-1500, -1500);
 }
 
 void driveAdjust() {
-	if (ownLaby_getPose()->cardinalDirection == DIRECTION_NORTH){
-		if (ownLaby_getRobotPose()->y > position_getExpectedPose()->y)
-			driveForward();
-		else
-			driveBackward();
+	if (driveAdjustYes == true){
+		driveBackward();
+		driveAdjustYes = false;
 	}
+	else{
 	
-	if (ownLaby_getPose()->cardinalDirection == DIRECTION_EAST){
-		if (ownLaby_getRobotPose()->x > position_getExpectedPose()->x)
-			driveForward();
-		else
-			driveBackward();
-	}
+		if (ownLaby_getPose()->cardinalDirection == DIRECTION_NORTH){
+			if (ownLaby_getRobotPose()->y > position_getExpectedPose()->y)
+				driveForward();
+			else
+				driveBackward();
+		}
 	
-	if (ownLaby_getPose()->cardinalDirection == DIRECTION_SOUTH){
-		if (ownLaby_getRobotPose()->y < position_getExpectedPose()->y)
-			driveForward();
-		else
-			driveBackward();
-	}
+		if (ownLaby_getPose()->cardinalDirection == DIRECTION_EAST){
+			if (ownLaby_getRobotPose()->x > position_getExpectedPose()->x)
+				driveForward();
+			else
+				driveBackward();
+		}
 	
-	if (ownLaby_getPose()->cardinalDirection == DIRECTION_WEST){
-		if (ownLaby_getRobotPose()->x < position_getExpectedPose()->x)
-			driveForward();
-		else
-			driveBackward();
+		if (ownLaby_getPose()->cardinalDirection == DIRECTION_SOUTH){
+			if (ownLaby_getRobotPose()->y < position_getExpectedPose()->y)
+				driveForward();
+			else
+				driveBackward();
+		}
+	
+		if (ownLaby_getPose()->cardinalDirection == DIRECTION_WEST){
+			if (ownLaby_getRobotPose()->x < position_getExpectedPose()->x)
+				driveForward();
+			else
+				driveBackward();
+		}
 	}
 }
 

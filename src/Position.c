@@ -15,7 +15,7 @@
 #include <tools/timeTask/timeTask.h>
 
 
-RobotParameters_t value_robotParams = { .axleWidth = 134.0f, .distPerTick = 45.0f * 1.1494f * M_PI / 1024.0f, .user1 = 0.0f, .user2 = 0.0f };
+RobotParameters_t value_robotParams = { .axleWidth = 134.0f, .distPerTick = (45.0f * 1.1494f * M_PI / 1024.0f) * 0.87313432835820895522388059701493f, .user1 = 0.0f, .user2 = 0.0f };
 
 Pose_t expectedPose = {0.0f, 0.0f, M_PI_2};
 Pose_t truePose = {0.0f, 0.0f, M_PI_2};
@@ -56,11 +56,11 @@ void position_updateExpectedPose(Pose_t* expectedPose) {
 		dy = d * sinf(expectedPose->theta);
 	} 
 	else {
-		float dTheta	= diffLR * value_robotParams.distPerTick / value_robotParams.axleWidth; //dTheta wird für dx und dy verwendet
+		float dTheta	= (diffLR * value_robotParams.distPerTick / value_robotParams.axleWidth) * 1.0949868073878627968337730870712f; //dTheta wird für dx und dy verwendet
 	
 		float R = ((float)(r + l) / (float)diffLR) * (value_robotParams.axleWidth/2.0f); //zwischenrechnung für Übersichtilichen Code
-		dx		= R * (sinf(expectedPose->theta + dTheta) - sinf(expectedPose->theta));
-		dy		= R * (cosf(expectedPose->theta) - cosf(expectedPose->theta + dTheta));
+		dx		= R * (sinf(expectedPose->theta + dTheta) - sinf(expectedPose->theta)) * 0.92648134601316752011704462326262f;
+		dy		= R * (cosf(expectedPose->theta) - cosf(expectedPose->theta + dTheta)) * 0.92648134601316752011704462326262f;
 		expectedPose->theta	+= dTheta;
 		
 		if (expectedPose->theta > 2.0f * M_PI)
@@ -88,7 +88,7 @@ void position_setExpectedPose(const Pose_t* newExpectedPose){
 void position_setTruePoseToExpectedPose(Pose_t* truePose){
 	expectedPose.x		= truePose->x;
 	expectedPose.y		= truePose->y;
-	expectedPose.theta = truePose->theta;
+	expectedPose.theta	= truePose->theta;
 }
 	
 /*

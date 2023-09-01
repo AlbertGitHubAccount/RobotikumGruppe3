@@ -10,6 +10,7 @@
 #include "robotControl.h"
 #include "IR.h"
 
+#include <motor/motor.h>
 #include <stdint.h>
 #include <math.h>
 #include <stdio.h>
@@ -25,12 +26,15 @@
 #define START_X 11
 #define START_Y 11
 
+static timeTask_time_t startTime;
+
 LPose_t labyPose = {3, 3, 0};
-Pose_t labyRobotPose = {0.0f, 0.0f, M_PI_2};
+Pose_t labyRobotPose = {0.0f, 0.0f, M_PI_2};	
+int8_t exitDirection = -1;
 
 int* visit_count[LABYRINTH_ROWS][LABYRINTH_COLS];
-Position current_position;
-Position target_tile;
+//Position current_position;
+//Position target_tile;
 
 /*const char* directionToString(RobotDirection_t direction) {
     switch(direction) {
@@ -42,6 +46,7 @@ Position target_tile;
     }
 }*/
 
+/*
 const Position* ownLaby_getCurrentPosition(){
 	return &current_position;
 }
@@ -50,15 +55,17 @@ void ownLaby_setCurrentPosition(const LPose_t* labyPose){
 	current_position.x = labyPose->row;
 	current_position.y = labyPose->column;
 }
+*/
 
-int ownLaby_getVisitCount(int row, int column) {
+uint8_t ownLaby_getVisitCount(uint8_t row, uint8_t column) {
 	return *(visit_count[row][column]);
 }
 
-void ownLaby_setVisitCount(int row, int col) {
+void ownLaby_setVisitCount(uint8_t row, uint8_t col) {
 	(*(visit_count[row][col]))++;
 }
 
+/*
 const Position* ownLaby_getTargetTile(){
 	return &target_tile;
 }
@@ -67,6 +74,7 @@ void ownLaby_setTargetTile(Position current_position, int8_t x_change, int8_t y_
 	target_tile.x = current_position.x + x_change;
 	target_tile.y = current_position.y + y_change;
 }
+*/
 
 const LPose_t* ownLaby_getPose(){
 	return &labyPose; 
@@ -122,12 +130,15 @@ void ownLaby_init() {
 }
 
 int8_t robot_getExitDirection(){
-	int8_t exitDirection = -1;
+	exitDirection = -1;
 	
 	LPose_t pose = *ownLaby_getPose();
+	pose.row	= ownLaby_getPose()->column;
+	pose.column	= ownLaby_getPose()->row;
+	
 	Walls_t walls = labyrinth_getWalls(pose.row, pose.column);
 	
-	if ((walls.walls != 7) || (walls.walls != 11) || (walls.walls != 13) || (walls.walls != 14)){ //Wenn es drei Wände gibt ist es auf keinen Fall der Exit
+	//if ((walls.walls != 7) || (walls.walls != 11) || (walls.walls != 13) || (walls.walls != 14)){ //Wenn es drei Wände gibt ist es auf keinen Fall der Exit
 		//		0111				1011					1101					1110
 		if ((ownLaby_getPose()->row == 0) && (walls.wall.north == WALLSTATE_CLEARED)){ //Roboter ist an der Nördlichen Kante
 			if ((ownLaby_getPose()->cardinalDirection == DIRECTION_NORTH))
@@ -164,18 +175,25 @@ int8_t robot_getExitDirection(){
 			else
 				exitDirection = 2;
 		}
-	}
+	//}
 	
 	return exitDirection;
 }
 
 void robot_rotate(RobotDirection_t localDirection){
-	if(localDirection == LEFT)
-		setState(TURN_LEFT);
-	if(localDirection == RIGHT)
-		setState(TURN_RIGHT);
-	if(localDirection == BACKWARD)
-		setState(TURN_AROUND);
+	Motor_stopAll();
+	timeTask_time_t now;
+	timeTask_getTimestamp(&now);
+	if (timeTask_getDuration(&startTime, &now) > 3000000UL){
+		if (localDirection == FORWARD)
+			setState(DRIVE_FORWARD);
+		if(localDirection == LEFT)
+			setState(TURN_LEFT);
+		if(localDirection == RIGHT)
+			setState(TURN_RIGHT);
+		if(localDirection == BACKWARD)
+			setState(TURN_AROUND);
+	}
 }
 
 /*bool robot_move(RobotDirection_t moveState){
@@ -213,7 +231,7 @@ bool robot_isWall(RobotDirection_t localDirection){
 	bool isWall = ((walls.walls & (1 << cardinalDirection)) >> cardinalDirection) == WALLSTATE_SET;
 	if (! isWall) {
 		const IR_value_t* IR_value = IR_getIR_value();
-		float IR_specificValue = 150.0f;
+		float IR_specificValue = 100.0f;
 		if (localDirection == FORWARD)
 			IR_specificValue = IR_value->frontIR;
 		if (localDirection == LEFT)
@@ -221,7 +239,7 @@ bool robot_isWall(RobotDirection_t localDirection){
 		if (localDirection == RIGHT)
 			IR_specificValue = IR_value->rightIR;
 			
-		if(IR_specificValue < 150.0f){
+		if(IR_specificValue < 100.0f){
 			isWall = true;
 			walls.walls |= 1 << cardinalDirection;
 			labyrinth_setWalls(pose.row, pose.column, walls);
@@ -244,13 +262,12 @@ void ownLaby_explore(){
 	bool canMoveRight	= false;
 	bool canMoveForward = false;
 	char lowestVisitCount = 127;
-	int8_t exitDir = robot_getExitDirection();
+	exitDirection = robot_getExitDirection();
 	
 	
-	
-	if (exitDir > -1) {
-		robot_rotate((RobotDirection_t)exitDir);
-		setState(DRIVE_EXIT);
+	if (exitDirection > -1) {
+		robot_rotate((RobotDirection_t)exitDirection);
+		//setState(DRIVE_EXIT); würde hier zu früh gemacht
 	}
 	else {
 		LPose_t pose = *ownLaby_getPose();        

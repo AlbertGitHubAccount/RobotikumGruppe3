@@ -13,6 +13,7 @@
 
 static bitset8_t taster;
 static uint16_t contacts = 0;
+bool driveAdjustYes = false;
 
 //static uint8_t pinlAlt;
 
@@ -33,30 +34,37 @@ uint8_t bumper_getContacts() {
 
 void bumper_checkCollision() {
 	uint8_t pinl = PINL & ((1<<PL0) | (1<<PL1) | (1<<PL2));
-	bool driveAdjust = false;
+	
 	if(taster.value != pinl){
-		if((pinl & (1<<PL0)) == 0)//rechts
+		if((pinl & (1<<PL0)) == 0){//rechts
 			contacts++;
-			robot_isWall(RIGHT);
-		if((pinl & (1<<PL1)) == 0)//links
+			if (getState() == DRIVE_FORWARD)
+				robot_isWall(RIGHT);
+		}
+		if((pinl & (1<<PL1)) == 0){//links
 			contacts++;
-			robot_isWall(LEFT);
+			if (getState() == DRIVE_FORWARD)
+				robot_isWall(LEFT);
+		}
 		if((pinl & (1<<PL2)) == 0){//vorne
 			contacts++;
-			robot_isWall(FORWARD);
-			driveAdjust = true;
+			if ((getState() == DRIVE_FORWARD) || (getState() == DRIVE_ADJUST)){
+				robot_isWall(FORWARD);
+				driveAdjustYes = true;
+			}
 		}
-		
+	
 		if (getState() != RESTING){
 			setState(RESTING);
 		}
 		
-		
 		//Adjusten des Roboters nach Wand-kontakt
-		if(driveAdjust == false)
-			setState(TURN_ADJUST);
-		if(driveAdjust == true)
-			setState(DRIVE_ADJUST);
+		if (getState() != TURN_ADJUST){
+			if(driveAdjustYes == false)
+				setState(TURN_ADJUST);
+			if(driveAdjustYes == true)
+				setState(DRIVE_ADJUST);
+		}
 	}
 		
 	taster.value = pinl;

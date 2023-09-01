@@ -13,8 +13,8 @@
 #include <communication/packetTypes.h>
 
 #define MIN_PWM 850
-#define MAX_PWM 8191
-#define MAX_V 380.0f
+#define MAX_PWM 3000 //8191
+#define MAX_V 150.0f //380.0f
 
 float calcDifAngle(const Pose_t* pose, const FPoint_t* lookahead);
 //static float thetaRobot = pose.theta;

@@ -214,6 +214,8 @@ int main(void) {
 			if ((oldTruePose.x != truePose.x) || (oldTruePose.y != truePose.y) || (oldTruePose.theta != truePose.theta)){
 				position_setTruePoseToExpectedPose(&truePose);
 				oldTruePose = truePose;
+				if (explorerFlag == true)
+					setState(TURN_ADJUST);
 			}
 			
 			//expectedPose = position_getExpectedPose();
