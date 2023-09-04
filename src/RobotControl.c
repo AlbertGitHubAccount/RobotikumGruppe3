@@ -44,7 +44,7 @@ void driveForward() {
 }
 
 void driveBackward() {
-	Motor_setPWM(-1500, -1500);
+	Motor_setPWM(-1500, -1600);
 }
 
 void driveAdjust() {
@@ -114,8 +114,18 @@ void resting() {
 		setState(IDLE);
 }
 
+/*
 void drive_exit() {
 	driveForward();
+	timeTask_time_t now;
+	timeTask_getTimestamp(&now);
+	if (timeTask_getDuration(&startTime, &now) > 3000000UL){
+		Motor_stopAll();
+	}
+}
+*/
+
+void out_of_bounds_stop() {
 	timeTask_time_t now;
 	timeTask_getTimestamp(&now);
 	if (timeTask_getDuration(&startTime, &now) > 3000000UL){
@@ -165,8 +175,14 @@ void stateMachine() {
 		case TURN_ADJUST:
 			turnAdjust();
 			break;
+		/*
 		case DRIVE_EXIT:
 			drive_exit();
+			break;
+		*/
+		case OUT_OF_BOUNDS:
+			out_of_bounds_stop();
+			break;
 		case STOP:
 			Motor_stopAll();
 			setState(IDLE);

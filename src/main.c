@@ -265,6 +265,14 @@ int main(void) {
 			 }
 		 }
 		 
+		 TIMETASK(OUT_OF_BOUNDS_TASK, 500) {
+			if (explorerFlag == true){
+				out_of_bounds_check();
+				if (getState() == OUT_OF_BOUNDS)
+					explorerFlag = false;
+			}
+		 }
+		 
         // poll receive buffer (read and parse all available packets from UART buffer)
         // and execute registered callback functions
         communication_readPackets();

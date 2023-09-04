@@ -261,9 +261,11 @@ ISR(PCINT0_vect){
 		if (stopCounter <= 0) {
 			stopCounter = -10;
 			
+			/*
 			if (robot_getExitDirection() != -1){
 				setState(DRIVE_EXIT);
 			}
+			*/
 			
 			if (getState() == TURN_ADJUST)
 				setState(DRIVE_ADJUST);
