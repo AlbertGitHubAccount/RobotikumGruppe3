@@ -192,6 +192,14 @@ int8_t robot_getExitDirection(){
 	return exitDirection;
 }
 
+void out_of_bounds_check(){
+	const LPose_t* pose = ownLaby_getPose();
+	
+	if (pose->row >= 7 || pose->column >= 7){
+		setState(OUT_OF_BOUNDS);
+	}
+}
+
 void robot_rotate(RobotDirection_t localDirection){
 	Motor_stopAll();
 	timeTask_time_t now;
