@@ -185,6 +185,10 @@ int8_t robot_getExitDirection(){
 		}
 	}
 	
+	if (walls.walls == 15){
+		exitDirection = 5;
+	}
+	
 	return exitDirection;
 }
 
@@ -274,6 +278,9 @@ void ownLaby_explore(){
 	
 	
 	if (exitDirection > -1) {
+		if (exitDirection == 5){
+			Motor_stopAll();
+		}
 		robot_rotate((RobotDirection_t)exitDirection);
 		//setState(DRIVE_EXIT); würde hier zu früh gemacht
 	}
