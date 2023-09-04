@@ -32,7 +32,7 @@ typedef struct __attribute__((__packed__)) {
 	int8_t y;
 }Position;
 
-const Position* ownLaby_getCurrentPosition();
+//const Position* ownLaby_getCurrentPosition();
 
 LPose_t labyPose;
 const LPose_t* ownLaby_getPose();
@@ -42,8 +42,10 @@ Pose_t labyRobotPose;
 const Pose_t* ownLaby_getRobotPose();
 void ownLaby_setRobotPose(const LPose_t* labyPose);
 
-int ownLaby_getVisitCount(int row, int column);
-void ownLaby_setVisitCount(int row, int col);
+int8_t robot_getExitDirection();
+
+uint8_t ownLaby_getVisitCount(uint8_t row, uint8_t column);
+void ownLaby_setVisitCount(uint8_t row, uint8_t col);
 
 //bool robot_canContinue();
 bool robot_isWall(RobotDirection_t localDirection);

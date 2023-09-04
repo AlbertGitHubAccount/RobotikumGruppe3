@@ -11,8 +11,10 @@
 
 #include <tools/variablesAccess.h>
 #include <stdint.h>
+#include <stdbool.h>
 
 void bumper_init();
+bool driveAdjustYes;
 
 bitset8_t bumper_getBumpers();
 

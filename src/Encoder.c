@@ -11,6 +11,7 @@
 #include "path.h"
 #include "OwnLaby.h"
 #include "IR.h"
+#include "Bumper.h"
 
 #include <avr/io.h>
 #include <math.h>
@@ -20,6 +21,7 @@
 #include <avr/interrupt.h>
 #include <util/atomic.h>
 #include <tools/labyrinth/labyrinth.h>
+#include <stdbool.h>
 
 static uint8_t pinbAlt;
 
@@ -47,7 +49,7 @@ void calcStopCounter_Turn(){
 		if (dtheta <= 0.0f)
 			dtheta = -1.0f * dtheta;
 	}
-	stopCounter	= (int16_t) ((dtheta * value_robotParams.axleWidth / value_robotParams.distPerTick));
+	stopCounter	= (int16_t) ((dtheta * value_robotParams.axleWidth / value_robotParams.distPerTick) * 0.82191780821917808219178082191781f);
 }
 
 void calcStopCounter_Drive(){
@@ -56,15 +58,20 @@ void calcStopCounter_Drive(){
 		adjustDistance = LABY_CELLSIZE;
 	}
 	else {
-		if ((ownLaby_getPose()->cardinalDirection == DIRECTION_NORTH) || (ownLaby_getPose()->cardinalDirection == DIRECTION_SOUTH))
-			adjustDistance = ownLaby_getRobotPose()->y - position_getExpectedPose()->y;
-		if ((ownLaby_getPose()->cardinalDirection == DIRECTION_EAST) || (ownLaby_getPose()->cardinalDirection == DIRECTION_WEST))
-			adjustDistance = ownLaby_getRobotPose()->x - position_getExpectedPose()->x;
+		if (driveAdjustYes == false){
+			if ((ownLaby_getPose()->cardinalDirection == DIRECTION_NORTH) || (ownLaby_getPose()->cardinalDirection == DIRECTION_SOUTH))
+				adjustDistance = ownLaby_getRobotPose()->y - position_getExpectedPose()->y;
+			if ((ownLaby_getPose()->cardinalDirection == DIRECTION_EAST) || (ownLaby_getPose()->cardinalDirection == DIRECTION_WEST))
+				adjustDistance = ownLaby_getRobotPose()->x - position_getExpectedPose()->x;
 			
-		if (adjustDistance < 0.0f)
-			adjustDistance = adjustDistance * -1.0f;
+			if (adjustDistance < 0.0f)
+				adjustDistance = adjustDistance * -1.0f;
+		}
+		else{
+			adjustDistance = 20.0f;
+		}
 	}
-	stopCounter = (int16_t) ((adjustDistance / value_robotParams.distPerTick) * 2.25f);
+	stopCounter = (int16_t) ((adjustDistance / value_robotParams.distPerTick) * 2.0f);
 }
 
 int16_t encoder_getStopCounter(){
@@ -218,10 +225,12 @@ ISR(PCINT0_vect){
 			}
 		}
 		
-		if ((IR_getIR_value()->frontIR < 45) && (getState() != DRIVE_ADJUST)) {
+		/*
+		if ((IR_getIR_value()->frontIR < 45) && (getState() == DRIVE_FORWARD)) {
 			stopCounter = -10;
-			setState(DRIVE_ADJUST);
+			setState(TURN_ADJUST);
 		}
+		*/
 		
 		if (stopCounter <= 0) {
 			stopCounter = -10;
@@ -229,7 +238,8 @@ ISR(PCINT0_vect){
 			if (getState() == DRIVE_ADJUST)
 				setState(RESTING);
 			else
-				setState(TURN_ADJUST);   //TURN_LEFT => DRIVE_FORWARD => TURN_ADJUST => DRIVE_ADJUST => STOP
+				setState(TURN_ADJUST);   //TURN_LEFT => DRIVE_FORWARD => TURN_ADJUST => DRIVE_ADJUST => RESTING
+				//setState(RESTING); //Für Testen
 		}
 	}
 	
@@ -251,10 +261,14 @@ ISR(PCINT0_vect){
 		if (stopCounter <= 0) {
 			stopCounter = -10;
 			
+			if (robot_getExitDirection() != -1){
+				setState(DRIVE_EXIT);
+			}
+			
 			if (getState() == TURN_ADJUST)
 				setState(DRIVE_ADJUST);
 				//setState(RESTING); //Für Testen
-			else 
+			else
 			{											//Für Labyrinth von hier, 
 				if (robot_canMove(FORWARD) == true)		//
 					setState(DRIVE_FORWARD);			//
