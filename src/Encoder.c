@@ -31,6 +31,7 @@ static int16_t stopCounter = -10;
 
 
 void calcStopCounter_Turn(){
+	ATOMIC_BLOCK(ATOMIC_RESTORESTATE){
 	float dtheta = M_PI_4;
 	if ((getState() == TURN_LEFT) || (getState() == TURN_RIGHT)){
 		dtheta = M_PI_2;
@@ -50,28 +51,41 @@ void calcStopCounter_Turn(){
 			dtheta = -1.0f * dtheta;
 	}
 	stopCounter	= (int16_t) ((dtheta * value_robotParams.axleWidth / value_robotParams.distPerTick) * 0.82191780821917808219178082191781f);
+	
+	}
 }
 
 void calcStopCounter_Drive(){
-	float adjustDistance = 0.0f;
+	ATOMIC_BLOCK(ATOMIC_RESTORESTATE){
+	float adjustDistance	= 0.0f;
+	float adjustOrientation = 0.0f;
 	if (getState() == DRIVE_FORWARD){
 		adjustDistance = LABY_CELLSIZE;
 	}
 	else {
-		if (driveAdjustYes == false){
-			if ((ownLaby_getPose()->cardinalDirection == DIRECTION_NORTH) || (ownLaby_getPose()->cardinalDirection == DIRECTION_SOUTH))
-				adjustDistance = ownLaby_getRobotPose()->y - position_getExpectedPose()->y;
-			if ((ownLaby_getPose()->cardinalDirection == DIRECTION_EAST) || (ownLaby_getPose()->cardinalDirection == DIRECTION_WEST))
-				adjustDistance = ownLaby_getRobotPose()->x - position_getExpectedPose()->x;
+		
+		if ((ownLaby_getPose()->cardinalDirection == DIRECTION_NORTH) || (ownLaby_getPose()->cardinalDirection == DIRECTION_SOUTH)){
+			adjustOrientation	= ownLaby_getRobotPose()->y		+ 3.5f * LABY_CELLSIZE;
+			adjustDistance		= position_getExpectedPose()->y + 3.5f * LABY_CELLSIZE;
+	
+			adjustDistance = adjustOrientation - adjustDistance;
+		}
+		if ((ownLaby_getPose()->cardinalDirection == DIRECTION_EAST) || (ownLaby_getPose()->cardinalDirection == DIRECTION_WEST)){
+			adjustOrientation	= ownLaby_getRobotPose()->x		+ 3.5f * LABY_CELLSIZE;
+			adjustDistance		= position_getExpectedPose()->x + 3.5f * LABY_CELLSIZE;
 			
-			if (adjustDistance < 0.0f)
-				adjustDistance = adjustDistance * -1.0f;
+			adjustDistance = adjustOrientation - adjustDistance;
 		}
-		else{
-			adjustDistance = 20.0f;
-		}
+			
+		if (adjustDistance < 0.0f)
+			adjustDistance = adjustDistance * -1.0f;
+		
+		if (adjustDistance > LABY_CELLSIZE_2 * 0.5f)
+			adjustDistance = LABY_CELLSIZE_2 * 0.5f;
 	}
+	
 	stopCounter = (int16_t) ((adjustDistance / value_robotParams.distPerTick) * 2.0f);
+	}
 }
 
 int16_t encoder_getStopCounter(){
@@ -181,23 +195,23 @@ ISR(PCINT0_vect){
 		
 		if( ((pinb & (1<<PCINT0)) ^ (pinbAlt & (1<<PCINT0))) != 0) { // Flankenwechsel auf Kanal A
 			if ((pinb & (1<<PCINT0)) != 0) {	// Flankenwechsel von LOW auf HIGH
-				if ((pinb & (1<<PCINT1)) == 0)		// B ist HIGH
-				stopCounter--;
+				//if ((pinb & (1<<PCINT1)) == 0)		// B ist HIGH
+					stopCounter--;
 			}
 			else {							// Flankenwechsel von HIGH auf LOW
-				if ((pinb & (1<<PCINT1)) != 0)		// B ist HIGH
-				stopCounter--;
+				//if ((pinb & (1<<PCINT1)) != 0)		// B ist HIGH
+					stopCounter--;
 			}
 		}
 		
 		if( ((pinb & (1<<PCINT1)) ^ (pinbAlt & (1<<PCINT1))) != 0) { // Flankenwechsel auf Kanal B
 			if ((pinb & (1<<PCINT1)) != 0) {	// Flankenwechsel von LOW auf HIGH
-				if ((pinb & (1<<PCINT0)) != 0)		// A ist HIGH
-				stopCounter--;
+				//if ((pinb & (1<<PCINT0)) != 0)		// A ist HIGH
+					stopCounter--;
 			}
 			else {							// Flankenwechsel von HIGH auf LOW
-				if ((pinb & (1<<PCINT0)) == 0)		// A ist HIGH
-				stopCounter--;
+				//if ((pinb & (1<<PCINT0)) == 0)		// A ist HIGH
+					stopCounter--;
 			}
 		}
 		
@@ -205,23 +219,23 @@ ISR(PCINT0_vect){
 		
 		if( ((pinb & (1<<PCINT2)) ^ (pinbAlt & (1<<PCINT2))) != 0) { // Flankenwechsel auf Kanal A
 			if ((pinb & (1<<PCINT2)) != 0) {	// Flankenwechsel von LOW auf HIGH
-				if ((pinb & (1<<PCINT3)) != 0)		// B ist HIGH
-				stopCounter--;
+				//if ((pinb & (1<<PCINT3)) != 0)		// B ist HIGH
+					stopCounter--;
 			}
 			else {								// Flankenwechsel von HIGH auf LOW
-				if ((pinb & (1<<PCINT3)) == 0)		// B ist HIGH
-				stopCounter--;
+				//if ((pinb & (1<<PCINT3)) == 0)		// B ist HIGH
+					stopCounter--;
 			}
 		}
 
 		if( ((pinb & (1<<PCINT3)) ^ (pinbAlt & (1<<PCINT3))) != 0) { // Flankenwechsel auf Kanal B
 			if ((pinb & (1<<PCINT3)) != 0) {	// Flankenwechsel von LOW auf HIGH
-				if ((pinb & (1<<PCINT2)) == 0)		// A ist HIGH
-				stopCounter--;
+				//if ((pinb & (1<<PCINT2)) == 0)		// A ist HIGH
+					stopCounter--;
 			}
 			else {								// Flankenwechsel von HIGH auf LOW
-				if ((pinb & (1<<PCINT2)) != 0)		// A ist HIGH
-				stopCounter--;
+				//if ((pinb & (1<<PCINT2)) != 0)		// A ist HIGH
+					stopCounter--;
 			}
 		}
 		
@@ -235,11 +249,13 @@ ISR(PCINT0_vect){
 		if (stopCounter <= 0) {
 			stopCounter = -10;
 		
-			if (getState() == DRIVE_ADJUST)
+			if (getState() == DRIVE_ADJUST){
 				setState(RESTING);
-			else
-				setState(TURN_ADJUST);   //TURN_LEFT => DRIVE_FORWARD => TURN_ADJUST => DRIVE_ADJUST => RESTING
-				//setState(RESTING); //Für Testen
+			}
+			else{
+				//setState(TURN_ADJUST);   //TURN_LEFT => DRIVE_FORWARD => TURN_ADJUST => DRIVE_ADJUST => RESTING
+				setState(RESTING); //Für Testen
+			}
 		}
 	}
 	
@@ -267,17 +283,20 @@ ISR(PCINT0_vect){
 			}
 			*/
 			
-			if (getState() == TURN_ADJUST)
-				setState(DRIVE_ADJUST);
-				//setState(RESTING); //Für Testen
+			if (getState() == TURN_ADJUST){
+				//setState(DRIVE_ADJUST);
+				setState(RESTING); //Für Testen
+			}
 			else
-			{											//Für Labyrinth von hier, 
-				if (robot_canMove(FORWARD) == true)		//
-					setState(DRIVE_FORWARD);			//
-				else									//
-					setState(RESTING);					//
-			}											//bis hier
-			//setState(RESTING); //Für Testen
+			/*{											//Für Labyrinth von hier, 
+				if (robot_canMove(FORWARD) == true)	{	//
+					setState(DRIVE_FORWARD);	
+				}										//
+				else	{								//
+					setState(RESTING);		
+				}										//
+			}	*/										//bis hier
+			setState(RESTING); //Für Testen
 		}
 	}
 	

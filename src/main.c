@@ -195,8 +195,8 @@ int main(void) {
             telemetry.infrared3 = IR_getIR_value()->leftIR; //Left
             telemetry.infrared4 = getState();
             telemetry.infrared5 = explorerFlag; //zu wenige Telmetrie userdaten
-            telemetry.user1 = ownLaby_getPose()->row;
-            telemetry.user2 = ownLaby_getPose()->column;
+            telemetry.user1 = ownLaby_getRobotPose()->x;
+            telemetry.user2 = ownLaby_getRobotPose()->y;
             communication_writePacket(CH_OUT_TELEMETRY, (uint8_t*)&telemetry, sizeof(telemetry));
         }
 	
@@ -230,12 +230,12 @@ int main(void) {
 			communication_writePacket(CH_OUT_GET_POSE, (uint8_t*)&aprilTag, sizeof(aprilTag));
 		}
 		
-		TIMETASK(LABY_POSE_TASK, 150) { // TimeTask die LabyPose updated (und somit auch LabyRobotPose)
+		TIMETASK(LABY_POSE_TASK, 200) { // TimeTask die LabyPose updated (und somit auch LabyRobotPose)
 			//truePose = *position_getAprilTagPose();
 			//const LPose_t* labyPose = ownLaby_getPose();
 			//Pose_t* expectedPose = position_getAprilTagPose();
 			ownLaby_setPose();
-			ownLaby_setRobotPose(&labyPose);
+			ownLaby_setRobotPose();
 			// send pose update to HWPCS
 			//communication_writePacket(CH_OUT_POSE, (uint8_t*)&truePose, sizeof(truePose));
 		}

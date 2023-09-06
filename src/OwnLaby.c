@@ -21,10 +21,10 @@
 #include <communication/packetTypes.h>
 
 
-#define MAX_X 21
-#define MAX_Y 21
-#define START_X 11
-#define START_Y 11
+//#define MAX_X 21
+//#define MAX_Y 21
+//#define START_X 11
+//#define START_Y 11
 
 static timeTask_time_t startTime;
 
@@ -103,21 +103,21 @@ const Pose_t* ownLaby_getRobotPose(){
 	return &labyRobotPose;
 }
 
-void ownLaby_setRobotPose(const LPose_t* labyPose){
+void ownLaby_setRobotPose(){
 	//labyRobotPose.x =   (((float) labyPose->row   ) * LABY_CELLSIZE) - 3.0f * LABY_CELLSIZE ;
 	//labyRobotPose.y = -((((float) labyPose->column) * LABY_CELLSIZE) - 3.0f * LABY_CELLSIZE);
 
 	//vertauschen von x und y wegen der anderen Orientierung von AprilTags
-	labyRobotPose.y =   (((float) labyPose->row   ) * LABY_CELLSIZE) - 3.0f * LABY_CELLSIZE ;
-	labyRobotPose.x = -((((float) labyPose->column) * LABY_CELLSIZE) - 3.0f * LABY_CELLSIZE);
+	labyRobotPose.y =   (((float) ownLaby_getPose()->row   ) * LABY_CELLSIZE) - 3.0f * LABY_CELLSIZE ;
+	labyRobotPose.x = -((((float) ownLaby_getPose()->column) * LABY_CELLSIZE) - 3.0f * LABY_CELLSIZE);
 
-	if (labyPose->cardinalDirection == 1) //East
+	if (ownLaby_getPose()->cardinalDirection == 1) //East
 		labyRobotPose.theta = 0.0f;
-	if (labyPose->cardinalDirection == 0) //North
+	if (ownLaby_getPose()->cardinalDirection == 0) //North
 		labyRobotPose.theta = 1.0f * M_PI_2;
-	if (labyPose->cardinalDirection == 3) //West
+	if (ownLaby_getPose()->cardinalDirection == 3) //West
 		labyRobotPose.theta = 1.0f * M_PI;	
-	if (labyPose->cardinalDirection == 2) //South
+	if (ownLaby_getPose()->cardinalDirection == 2) //South
 		labyRobotPose.theta = 3.0f * M_PI_2;
 }
 
@@ -251,7 +251,7 @@ bool robot_isWall(RobotDirection_t localDirection){
 	bool isWall = ((walls.walls & (1 << pose->cardinalDirection)) >> pose->cardinalDirection) == WALLSTATE_SET;
 	if (! isWall) {
 		const IR_value_t* IR_value = IR_getIR_value();
-		float IR_specificValue = 100.0f;
+		float IR_specificValue = 150.0f;
 		if (localDirection == FORWARD)
 			IR_specificValue = IR_value->frontIR;
 		if (localDirection == LEFT)
@@ -259,7 +259,7 @@ bool robot_isWall(RobotDirection_t localDirection){
 		if (localDirection == RIGHT)
 			IR_specificValue = IR_value->rightIR;
 			
-		if(IR_specificValue < 100.0f){
+		if(IR_specificValue < 150.0f){
 			isWall = true;
 			walls.walls |= 1 << cardinalDirection;
 			labyrinth_setWalls(pose->row, pose->column, walls);

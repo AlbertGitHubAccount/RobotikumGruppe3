@@ -40,7 +40,7 @@ void ownLaby_setPose();
 
 Pose_t labyRobotPose;
 const Pose_t* ownLaby_getRobotPose();
-void ownLaby_setRobotPose(const LPose_t* labyPose);
+void ownLaby_setRobotPose();
 
 int8_t robot_getExitDirection();
 void out_of_bounds_check();

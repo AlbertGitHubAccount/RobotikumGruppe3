@@ -40,7 +40,7 @@ timeTask_time_t getStartTime(){
 }
 
 void driveForward() {
-	Motor_setPWM(2500, 2600);
+	Motor_setPWM(2500, 2570);
 }
 
 void driveBackward() {
@@ -48,40 +48,34 @@ void driveBackward() {
 }
 
 void driveAdjust() {
-	if (driveAdjustYes == true){
-		driveBackward();
-		driveAdjustYes = false;
+	if (ownLaby_getPose()->cardinalDirection == DIRECTION_NORTH){
+		if (ownLaby_getRobotPose()->y > position_getExpectedPose()->y)
+			driveForward();
+		else
+			driveBackward();
 	}
-	else{
 	
-		if (ownLaby_getPose()->cardinalDirection == DIRECTION_NORTH){
-			if (ownLaby_getRobotPose()->y > position_getExpectedPose()->y)
-				driveForward();
-			else
-				driveBackward();
-		}
-	
-		if (ownLaby_getPose()->cardinalDirection == DIRECTION_EAST){
-			if (ownLaby_getRobotPose()->x > position_getExpectedPose()->x)
-				driveForward();
-			else
-				driveBackward();
-		}
-	
-		if (ownLaby_getPose()->cardinalDirection == DIRECTION_SOUTH){
-			if (ownLaby_getRobotPose()->y < position_getExpectedPose()->y)
-				driveForward();
-			else
-				driveBackward();
-		}
-	
-		if (ownLaby_getPose()->cardinalDirection == DIRECTION_WEST){
-			if (ownLaby_getRobotPose()->x < position_getExpectedPose()->x)
-				driveForward();
-			else
-				driveBackward();
-		}
+	if (ownLaby_getPose()->cardinalDirection == DIRECTION_EAST){
+		if (ownLaby_getRobotPose()->x > position_getExpectedPose()->x)
+			driveForward();
+		else
+			driveBackward();
 	}
+	
+	if (ownLaby_getPose()->cardinalDirection == DIRECTION_SOUTH){
+		if (ownLaby_getRobotPose()->y < position_getExpectedPose()->y)
+			driveForward();
+		else
+			driveBackward();
+	}
+	
+	if (ownLaby_getPose()->cardinalDirection == DIRECTION_WEST){
+		if (ownLaby_getRobotPose()->x < position_getExpectedPose()->x)
+			driveForward();
+		else
+			driveBackward();
+	}
+	
 }
 
 void turnLeft() {
