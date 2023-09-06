@@ -251,7 +251,7 @@ bool robot_isWall(RobotDirection_t localDirection){
 	bool isWall = ((walls.walls & (1 << pose->cardinalDirection)) >> pose->cardinalDirection) == WALLSTATE_SET;
 	if (! isWall) {
 		const IR_value_t* IR_value = IR_getIR_value();
-		float IR_specificValue = 100.0f;
+		float IR_specificValue = 150.0f;
 		if (localDirection == FORWARD)
 			IR_specificValue = IR_value->frontIR;
 		if (localDirection == LEFT)
@@ -259,7 +259,7 @@ bool robot_isWall(RobotDirection_t localDirection){
 		if (localDirection == RIGHT)
 			IR_specificValue = IR_value->rightIR;
 			
-		if(IR_specificValue < 100.0f){
+		if(IR_specificValue < 150.0f){
 			isWall = true;
 			walls.walls |= 1 << cardinalDirection;
 			labyrinth_setWalls(pose->row, pose->column, walls);
