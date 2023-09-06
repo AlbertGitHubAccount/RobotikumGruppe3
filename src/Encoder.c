@@ -253,8 +253,8 @@ ISR(PCINT0_vect){
 				setState(RESTING);
 			}
 			else{
-				//setState(TURN_ADJUST);   //TURN_LEFT => DRIVE_FORWARD => TURN_ADJUST => DRIVE_ADJUST => RESTING
-				setState(RESTING); //Für Testen
+				setState(TURN_ADJUST);   //TURN_LEFT => DRIVE_FORWARD => TURN_ADJUST => DRIVE_ADJUST => RESTING
+				//setState(RESTING); //Für Testen
 			}
 		}
 	}
@@ -284,19 +284,19 @@ ISR(PCINT0_vect){
 			*/
 			
 			if (getState() == TURN_ADJUST){
-				//setState(DRIVE_ADJUST);
-				setState(RESTING); //Für Testen
+				setState(DRIVE_ADJUST);
+				//setState(RESTING); //Für Testen
 			}
 			else
-			/*{											//Für Labyrinth von hier, 
+			{											//Für Labyrinth von hier, 
 				if (robot_canMove(FORWARD) == true)	{	//
-					setState(DRIVE_FORWARD);	
+					setState(DRIVE_FORWARD);			//
 				}										//
 				else	{								//
-					setState(RESTING);		
+					setState(RESTING);					//
 				}										//
-			}	*/										//bis hier
-			setState(RESTING); //Für Testen
+			}											//bis hier
+			//setState(RESTING); //Für Testen
 		}
 	}
 	
