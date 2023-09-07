@@ -43,7 +43,7 @@ const Pose_t* ownLaby_getRobotPose();
 void ownLaby_setRobotPose();
 
 int8_t robot_getExitDirection();
-void out_of_bounds_check();
+bool out_of_bounds_check();
 
 uint8_t ownLaby_getVisitCount(uint8_t row, uint8_t column);
 void ownLaby_setVisitCount(uint8_t row, uint8_t col);

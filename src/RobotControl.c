@@ -28,6 +28,7 @@ static state_t state = IDLE;
 static timeTask_time_t startTime;		//timeTask_getTimestamp();
 
 void setState(const state_t newState) {
+	communication_log(LEVEL_INFO, "S%"PRIu8, newState);
 	state = newState;
 }
 
@@ -35,11 +36,13 @@ state_t getState() {
 	return state;
 }
 
-timeTask_time_t getStartTime(){
-	return startTime;
-}
+//timeTask_time_t getStartTime(){
+//	return startTime;
+//}
 
 void driveForward() {
+	ownLaby_setPose();
+	ownLaby_setRobotPose();
 	Motor_setPWM(2500, 2570);
 }
 
@@ -47,64 +50,89 @@ void driveBackward() {
 	Motor_setPWM(-1500, -1600);
 }
 
-void driveAdjust() {
+void driveAdjustCalc(){
+	ownLaby_setPose();
+	ownLaby_setRobotPose();
 	if (ownLaby_getPose()->cardinalDirection == DIRECTION_NORTH){
 		if (ownLaby_getRobotPose()->y > position_getExpectedPose()->y)
-			driveForward();
+		driveForward();
 		else
-			driveBackward();
+		driveBackward();
 	}
-	
+		
 	if (ownLaby_getPose()->cardinalDirection == DIRECTION_EAST){
 		if (ownLaby_getRobotPose()->x > position_getExpectedPose()->x)
-			driveForward();
+		driveForward();
 		else
-			driveBackward();
+		driveBackward();
 	}
-	
+		
 	if (ownLaby_getPose()->cardinalDirection == DIRECTION_SOUTH){
 		if (ownLaby_getRobotPose()->y < position_getExpectedPose()->y)
-			driveForward();
+		driveForward();
 		else
-			driveBackward();
+		driveBackward();
 	}
-	
+		
 	if (ownLaby_getPose()->cardinalDirection == DIRECTION_WEST){
 		if (ownLaby_getRobotPose()->x < position_getExpectedPose()->x)
-			driveForward();
+		driveForward();
 		else
-			driveBackward();
+		driveBackward();
 	}
 	
+	setState(DRIVE_ADJUST);	
+}
+
+void turnLeft_preState(){
+	ownLaby_setPose();
+	ownLaby_setRobotPose();
+	Motor_setPWM(-3000, 3000);
+	setState(TURN_LEFT);
 }
 
 void turnLeft() {
-	Motor_setPWM(-3000, 3000);
+
+}
+
+void turnRight_preState(){
+	ownLaby_setPose();
+	ownLaby_setRobotPose();
+	Motor_setPWM(3000, -3000);
+	setState(TURN_RIGHT);
 }
 
 void turnRight() {
-	Motor_setPWM(3000, -3000);
+
 }
 
-void turnAdjust(){
+
+
+
+void calcAdjust(){
+	ownLaby_setPose();
+	ownLaby_setRobotPose();
+
 	float dtheta = position_getExpectedPose()->theta - ownLaby_getRobotPose()->theta;
 	if (dtheta >  M_PI_4)
-		dtheta -= 2.0f * M_PI;
+	dtheta -= 2.0f * M_PI;
 	
 	if (dtheta < -M_PI_4)
-		dtheta += 2.0f * M_PI;
-		
+	dtheta += 2.0f * M_PI;
+	
 	if (dtheta <= 0.0f)
-		turnLeft();
+	turnLeft();
 	if (dtheta  > 0.0f)
-		turnRight();
+	turnRight();
+
+	setState(TURN_ADJUST);
 }
 
 void resting() {
 	Motor_stopAll();
-	timeTask_time_t now;
-	timeTask_getTimestamp(&now);
-	if (timeTask_getDuration(&startTime, &now) > 3000000UL)
+//	timeTask_time_t now;
+//	timeTask_getTimestamp(&now);
+//	if (timeTask_getDuration(&startTime, &now) > 3000000UL)
 		setState(IDLE);
 }
 
@@ -120,11 +148,11 @@ void drive_exit() {
 */
 
 void out_of_bounds_stop() {
-	timeTask_time_t now;
-	timeTask_getTimestamp(&now);
-	if (timeTask_getDuration(&startTime, &now) > 3000000UL){
+//	timeTask_time_t now;
+//	timeTask_getTimestamp(&now);
+//	if (timeTask_getDuration(&startTime, &now) > 3000000UL){
 		Motor_stopAll();
-	}
+//	}
 }
 
 void checkSensors(){
@@ -132,6 +160,19 @@ void checkSensors(){
 	robot_isWall(FORWARD);
 	robot_isWall(RIGHT);
 	setState(IDLE);
+}
+
+void wait_init() {
+	timeTask_getTimestamp(&startTime);
+	setState(WAIT);
+}
+
+void wait() {
+	timeTask_time_t now;
+	timeTask_getTimestamp(&now);
+	if (timeTask_getDuration(&startTime, &now) > 200000UL) {
+		setState(EXPLORE);
+	}
 }
 
 // Funktion zur Steuerung des Roboters
@@ -151,14 +192,21 @@ void stateMachine() {
 		case DRIVE_BACKWARD:
 			driveBackward();
 			break;
+		case DRIVE_ADJUST_CALC:
+			driveAdjustCalc();
+			break;
 		case DRIVE_ADJUST:
-			driveAdjust();
 			break;
 		case RESTING:
 			resting();
 			break;
+		case TURN_LEFT_PRESTATE:
+			turnLeft_preState();
+			break;
 		case TURN_LEFT:
-			turnLeft();
+			break;
+		case TURN_RIGHT_PRESTATE:
+			turnRight_preState();
 			break;
 		case TURN_RIGHT:
 			turnRight();
@@ -166,8 +214,16 @@ void stateMachine() {
 		case TURN_AROUND:
 			turnLeft();
 			break;
+		case CALC_ADJUST:
+			calcAdjust();
+			break;
 		case TURN_ADJUST:
-			turnAdjust();
+			break;
+		case WAIT_INIT:
+			wait_init();
+			break;
+		case WAIT:
+			wait();
 			break;
 		/*
 		case DRIVE_EXIT:

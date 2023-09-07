@@ -39,7 +39,8 @@ void position_setAprilTagPose(const Pose_t* aprilTagPose){
 	if (truePose.theta > 2.0f * M_PI)
 		truePose.theta -= 2.0f * M_PI;
 	if (truePose.theta < 0.0f)
-		truePose.theta += 2.0f * M_PI;
+		truePose.theta += 2.0f * M_PI; 
+	position_setTruePoseToExpectedPose(&truePose);
 }
 
 void position_updateExpectedPose(Pose_t* expectedPose) {

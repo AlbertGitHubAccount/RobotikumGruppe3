@@ -14,6 +14,7 @@
 void calcStopCounter_Turn();
 void calcStopCounter_Drive();
 void encoder_init();
+bool testFlag;
 
 void encoder_getCountersAndReset(int16_t* l, int16_t* r);
 

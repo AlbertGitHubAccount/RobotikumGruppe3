@@ -12,6 +12,7 @@
 #include "OwnLaby.h"
 #include "IR.h"
 #include "Bumper.h"
+#include <motor/motor.h>
 
 #include <avr/io.h>
 #include <math.h>
@@ -29,9 +30,10 @@ static int16_t counterR;
 static int16_t counterL;
 static int16_t stopCounter = -10;
 
+bool testFlag; 
+
 
 void calcStopCounter_Turn(){
-	ATOMIC_BLOCK(ATOMIC_RESTORESTATE){
 	float dtheta = M_PI_4;
 	if ((getState() == TURN_LEFT) || (getState() == TURN_RIGHT)){
 		dtheta = M_PI_2;
@@ -39,6 +41,7 @@ void calcStopCounter_Turn(){
 	if (getState() == TURN_AROUND){
 		dtheta = M_PI;
 	}
+	
 	if (getState() == TURN_ADJUST){
 		dtheta = position_getExpectedPose()->theta - ownLaby_getRobotPose()->theta;
 		if (dtheta >  M_PI_4)
@@ -50,13 +53,11 @@ void calcStopCounter_Turn(){
 		if (dtheta <= 0.0f)
 			dtheta = -1.0f * dtheta;
 	}
-	stopCounter	= (int16_t) ((dtheta * value_robotParams.axleWidth / value_robotParams.distPerTick) * 0.82191780821917808219178082191781f);
 	
-	}
+	stopCounter	= (int16_t) ((dtheta * value_robotParams.axleWidth / value_robotParams.distPerTick) * 0.82191780821917808219178082191781f);
 }
 
 void calcStopCounter_Drive(){
-	ATOMIC_BLOCK(ATOMIC_RESTORESTATE){
 	float adjustDistance	= 0.0f;
 	float adjustOrientation = 0.0f;
 	if (getState() == DRIVE_FORWARD){
@@ -85,7 +86,6 @@ void calcStopCounter_Drive(){
 	}
 	
 	stopCounter = (int16_t) ((adjustDistance / value_robotParams.distPerTick) * 2.0f);
-	}
 }
 
 int16_t encoder_getStopCounter(){
@@ -247,14 +247,18 @@ ISR(PCINT0_vect){
 		*/
 		
 		if (stopCounter <= 0) {
+			Motor_stopAll();
 			stopCounter = -10;
 		
-			if (getState() == DRIVE_ADJUST){
-				setState(RESTING);
-			}
-			else{
-				setState(TURN_ADJUST);   //TURN_LEFT => DRIVE_FORWARD => TURN_ADJUST => DRIVE_ADJUST => RESTING
-				//setState(RESTING); //Für Testen
+			if (testFlag) {
+				setState(IDLE);
+			} else {
+				if (getState() == DRIVE_ADJUST){
+					setState(WAIT_INIT);
+				} else {
+					setState(CALC_ADJUST);   //TURN_LEFT => DRIVE_FORWARD => TURN_ADJUST => DRIVE_ADJUST => RESTING
+					//setState(RESTING); //Für Testen
+				}
 			}
 		}
 	}
@@ -275,6 +279,7 @@ ISR(PCINT0_vect){
 			stopCounter--;
 		
 		if (stopCounter <= 0) {
+			Motor_stopAll();
 			stopCounter = -10;
 			
 			/*
@@ -284,17 +289,21 @@ ISR(PCINT0_vect){
 			*/
 			
 			if (getState() == TURN_ADJUST){
-				setState(DRIVE_ADJUST);
+				setState(DRIVE_ADJUST_CALC);
 				//setState(RESTING); //Für Testen
 			}
 			else
 			{											//Für Labyrinth von hier, 
-				if (robot_canMove(FORWARD) == true)	{	//
-					setState(DRIVE_FORWARD);			//
-				}										//
-				else	{								//
-					setState(RESTING);					//
-				}										//
+				if (testFlag) {
+					setState(IDLE);
+				} else {
+					if (robot_canMove(FORWARD) == true)	{	//
+						setState(DRIVE_FORWARD);			//
+					}										//
+					else	{								//
+						setState(EXPLORE);					//
+					}										//
+				}
 			}											//bis hier
 			//setState(RESTING); //Für Testen
 		}

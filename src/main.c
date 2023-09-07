@@ -30,8 +30,8 @@
  * PRIVATE VARIABLES
  *******************************************************************************
  */
-static bool	explorerFlag = false;
-static Pose_t oldTruePose = {0.0f, 0.0f, M_PI_2};
+// static bool	explorerFlag = false;
+//static Pose_t oldTruePose = {0.0f, 0.0f, M_PI_2};
 
 
 /*
@@ -66,10 +66,11 @@ static void commUserCommand(const uint8_t* packet, __attribute__((unused)) const
 		setState(TURN_AROUND);
 		break;
     case 2: // command ID 2: Turn Left
-		setState(TURN_LEFT);
+		testFlag = true;
+		setState(TURN_LEFT_PRESTATE);
         break;
     case 3: // command ID 3
-		setState(TURN_RIGHT);
+		setState(TURN_RIGHT_PRESTATE);
 		break;
 	case 4: 
 		expectedPose = position_getExpectedPose();
@@ -87,16 +88,18 @@ static void commUserCommand(const uint8_t* packet, __attribute__((unused)) const
 		setState(DRIVE_FORWARD);
 		break;
 	case 6:
+		testFlag = true;
 		setState(EXPLORE);
 		break;
 	case 7:
 		setState(DRIVE_BACKWARD);
 		break;
 	case 8: //CHANGE_EXPLORE_FLAG
-		if (explorerFlag == false)
-			explorerFlag = true;
+		testFlag = false;
+		if (getState() == IDLE)
+			setState(EXPLORE);
 		else
-			explorerFlag = false;		
+			setState(IDLE);
 		break;
 	case 9:
 		setState(CHECK_SENSORS);
@@ -194,13 +197,13 @@ int main(void) {
             telemetry.infrared2 = IR_getIR_value()->rightIR; //Right
             telemetry.infrared3 = IR_getIR_value()->leftIR; //Left
             telemetry.infrared4 = getState();
-            telemetry.infrared5 = explorerFlag; //zu wenige Telmetrie userdaten
+            telemetry.infrared5 = 0; //zu wenige Telmetrie userdaten
             telemetry.user1 = ownLaby_getRobotPose()->x;
             telemetry.user2 = ownLaby_getRobotPose()->y;
             communication_writePacket(CH_OUT_TELEMETRY, (uint8_t*)&telemetry, sizeof(telemetry));
         }
 	
-		TIMETASK(POSE_TASK, 100) { // execute block approximately every 150ms				alter Timetask der OHNE APRILTAG arbeitet
+		TIMETASK(POSE_TASK, 20) { // execute block approximately every 150ms				alter Timetask der OHNE APRILTAG arbeitet
 			//expectedPose = *position_getExpectedPose();
 			position_updateExpectedPose(&expectedPose);
 			//position_setExpectedPose(expectedPose);	
@@ -209,36 +212,36 @@ int main(void) {
 			communication_writePacket(CH_OUT_POSE, (uint8_t*)&expectedPose, sizeof(expectedPose));
 		}
 		
-		TIMETASK(SET_APRIL_ON_EXPECTED_TASK, 150) { //überschreibe die Pose wenn das AprilTag geupdatet wird
+		//TIMETASK(SET_APRIL_ON_EXPECTED_TASK, 150) { //überschreibe die Pose wenn das AprilTag geupdatet wird
 			//Pose_t compareTruePose = *position_getAprilTagPose();
-			if ((oldTruePose.x != truePose.x) || (oldTruePose.y != truePose.y) || (oldTruePose.theta != truePose.theta)){
-				position_setTruePoseToExpectedPose(&truePose);
-				oldTruePose = truePose;
-				if (explorerFlag == true)
-					setState(TURN_ADJUST);
-			}
+			//if ((oldTruePose.x != truePose.x) || (oldTruePose.y != truePose.y) || (oldTruePose.theta != truePose.theta)){
+			//	position_setTruePoseToExpectedPose(&truePose);
+			//	oldTruePose = truePose;
+				//if (explorerFlag == true)
+				//	setState(TURN_ADJUST);
+			//}
 			
 			//expectedPose = position_getExpectedPose();
 			// send pose update to HWPCS
 			//communication_writePacket(CH_OUT_POSE, (uint8_t*)&expectedPose, sizeof(expectedPose));
-		}
+		//}
 		
 		
-		TIMETASK(APRIL_TAG_TASK, 150){ //GetPose_t um Daten von MAIN_APRIL_TAG zu requesten
+		TIMETASK(APRIL_TAG_TASK, 1000){ //GetPose_t um Daten von MAIN_APRIL_TAG zu requesten
 			GetPose_t aprilTag;
 			aprilTag.aprilTagType = APRIL_TAG_MAIN;
 			communication_writePacket(CH_OUT_GET_POSE, (uint8_t*)&aprilTag, sizeof(aprilTag));
 		}
 		
-		TIMETASK(LABY_POSE_TASK, 200) { // TimeTask die LabyPose updated (und somit auch LabyRobotPose)
+		//TIMETASK(LABY_POSE_TASK, 200) { // TimeTask die LabyPose updated (und somit auch LabyRobotPose)
 			//truePose = *position_getAprilTagPose();
 			//const LPose_t* labyPose = ownLaby_getPose();
 			//Pose_t* expectedPose = position_getAprilTagPose();
-			ownLaby_setPose();
-			ownLaby_setRobotPose();
+			//ownLaby_setPose();
+			//ownLaby_setRobotPose();
 			// send pose update to HWPCS
 			//communication_writePacket(CH_OUT_POSE, (uint8_t*)&truePose, sizeof(truePose));
-		}
+		//}
         
 		 TIMETASK(FOLLOWER_TASK, 20) {	
 			const PathFollowerStatus_t* pathFollower_status = pathFollower_getStatus();
@@ -259,12 +262,12 @@ int main(void) {
 			 communication_writePacket(CH_OUT_LABY_WALLS, (uint8_t*)wallData, sizeof(*wallData));
 		 }
 		 
-		 TIMETASK(EXPLORE_TASK, 300) {
-			 if ((getState() == IDLE) && (explorerFlag == true)){
-				 setState(EXPLORE);
-			 }
-		 }
-		 
+		//TIMETASK(EXPLORE_TASK, 300) {
+		//	 if ((getState() == IDLE) && (explorerFlag == true)){
+		//		 setState(EXPLORE);
+		//	 }
+		 //}
+/*		 
 		 TIMETASK(OUT_OF_BOUNDS_TASK, 500) {
 			if (explorerFlag == true){
 				out_of_bounds_check();
@@ -272,7 +275,7 @@ int main(void) {
 					explorerFlag = false;
 			}
 		 }
-		 
+*/		 
         // poll receive buffer (read and parse all available packets from UART buffer)
         // and execute registered callback functions
         communication_readPackets();

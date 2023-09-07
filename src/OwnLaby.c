@@ -26,7 +26,7 @@
 //#define START_X 11
 //#define START_Y 11
 
-static timeTask_time_t startTime;
+//static timeTask_time_t startTime;
 
 LPose_t labyPose = {3, 3, 0};
 Pose_t labyRobotPose = {0.0f, 0.0f, M_PI_2};	
@@ -192,19 +192,17 @@ int8_t robot_getExitDirection(){
 	return exitDirection;
 }
 
-void out_of_bounds_check(){
+bool out_of_bounds_check(){
 	const LPose_t* pose = ownLaby_getPose();
 	
-	if (pose->row >= 7 || pose->column >= 7){
-		setState(OUT_OF_BOUNDS);
-	}
+	return (pose->row >= 7) || (pose->column >= 7);
 }
 
 void robot_rotate(RobotDirection_t localDirection){
-	Motor_stopAll();
-	timeTask_time_t now;
-	timeTask_getTimestamp(&now);
-	if (timeTask_getDuration(&startTime, &now) > 3000000UL){
+	//Motor_stopAll();
+	//timeTask_time_t now;
+	//timeTask_getTimestamp(&now);
+	//if (timeTask_getDuration(&startTime, &now) > 3000000UL){
 		if (localDirection == FORWARD)
 			setState(DRIVE_FORWARD);
 		if(localDirection == LEFT)
@@ -213,7 +211,7 @@ void robot_rotate(RobotDirection_t localDirection){
 			setState(TURN_RIGHT);
 		if(localDirection == BACKWARD)
 			setState(TURN_AROUND);
-	}
+	//}
 }
 
 /*bool robot_move(RobotDirection_t moveState){
@@ -282,9 +280,16 @@ void ownLaby_explore(){
 	bool canMoveRight	= false;
 	bool canMoveForward = false;
 	char lowestVisitCount = 127;
+
+	ownLaby_setPose();
+	ownLaby_setRobotPose();
+
+	if (out_of_bounds_check()) {
+		setState(IDLE);
+		return;
+	}
+	
 	exitDirection = robot_getExitDirection();
-	
-	
 	if (exitDirection > -1) {
 		if (exitDirection == 5){
 			Motor_stopAll();
